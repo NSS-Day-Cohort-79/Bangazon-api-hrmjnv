@@ -75,8 +75,16 @@ class Product(SafeDeleteModel):
         """
         ratings = ProductRating.objects.filter(product=self)
 
-        # return an average of 0 if there are no ratings
-        if len(ratings) < 1:
+        # -----------------------------------------------
+        # FIX APPLIED: Prevent ZeroDivisionError
+        # OLD BEHAVIOR:
+        #   avg = total_rating / len(ratings)
+        #   This crashed when len(ratings) == 0
+        #
+        # NEW BEHAVIOR:
+        #   Return 0 when there are no ratings
+        # -----------------------------------------------
+        if len(ratings) == 0:
             return 0
 
         total_rating = 0
