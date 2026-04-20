@@ -105,8 +105,14 @@ class Orders(ViewSet):
         customer = Customer.objects.get(user=request.auth.user)
         order = Order.objects.get(pk=pk, customer=customer)
         payment = Payment.objects.get(pk=request.data["payment_type"])
-        order.payment_type = payment
-        order.save()
+        if payment.customer == customer:
+            order.payment_type = payment
+            order.save()
+        else:
+            return Response(
+                "Payment doesn't belong to this customer",
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
