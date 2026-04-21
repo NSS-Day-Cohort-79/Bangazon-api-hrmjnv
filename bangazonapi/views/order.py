@@ -33,7 +33,15 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Order
         url = serializers.HyperlinkedIdentityField(view_name="order", lookup_field="id")
-        fields = ("id", "url", "created_date", "payment_type", "customer", "lineitems")
+        fields = (
+            "id",
+            "url",
+            "created_date",
+            "completed_on",
+            "payment_type",
+            "customer",
+            "lineitems",
+        )
 
 
 class Orders(ViewSet):
@@ -107,6 +115,7 @@ class Orders(ViewSet):
         payment = Payment.objects.get(pk=request.data["payment_type"])
         if payment.customer == customer:
             order.payment_type = payment
+            order.completed_on = datetime.datetime.now()
             order.save()
         else:
             return Response(
@@ -147,11 +156,7 @@ class Orders(ViewSet):
             ]
         """
         customer = Customer.objects.get(user=request.auth.user)
-        orders = Order.objects.filter(customer=customer)
-
-        payment = self.request.query_params.get("payment_id", None)
-        if payment is not None:
-            orders = orders.filter(payment__id=payment)
+        orders = Order.objects.filter(customer=customer, payment_type__isnull=False)
 
         json_orders = OrderSerializer(orders, many=True, context={"request": request})
 
