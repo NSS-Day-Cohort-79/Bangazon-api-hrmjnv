@@ -57,6 +57,7 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
 
     lineitems = OrderLineItemSerializer(many=True)
     payment_type = OrderPaymentSerializer(many=False)
+    total = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -69,7 +70,14 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
             "payment_type",
             "customer",
             "lineitems",
+            "total",
         )
+
+    def get_total(self, obj):
+        total = 0
+        for lineitem in obj.lineitems.all():
+            total += lineitem.product.price
+        return total
 
 
 class Orders(ViewSet):
