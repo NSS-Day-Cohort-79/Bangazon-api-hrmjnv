@@ -1,4 +1,5 @@
 """View module for handling requests about customer shopping cart"""
+
 import datetime
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -25,7 +26,8 @@ class Cart(ViewSet):
 
         try:
             open_order = Order.objects.get(
-                customer=current_user, payment_type__isnull=True)
+                customer=current_user, payment_type__isnull=True
+            )
         except Order.DoesNotExist as ex:
             open_order = Order()
             open_order.created_date = datetime.datetime.now()
@@ -39,7 +41,6 @@ class Cart(ViewSet):
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
-
     def destroy(self, request, pk=None):
         """
         @api {DELETE} /cart/:id DELETE line item from cart
@@ -48,20 +49,36 @@ class Cart(ViewSet):
 
         @apiParam {id} id Product Id to remove from cart
         @apiSuccessExample {json} Success
-            HTTP/1.1 204 No Content
+        HTTP/1.1 204 No Content
+        @apiErrorExample {json} Product Not In Cart
+        HTTP/1.1 404 Not Found
+        {
+            "detail": "Product not in cart."
+            }
         """
-        current_user = Customer.objects.get(user=request.auth.user)
-        open_order = Order.objects.get(
-            customer=current_user, payment_type=None)
 
-        line_item = OrderProduct.objects.filter(
-            product__id=pk,
-            order=open_order
-        )[0]
-        line_item.delete()
+        try:
+            current_user = Customer.objects.get(user=request.auth.user)
+            open_order = Order.objects.get(customer=current_user, payment_type=None)
 
-        return Response({}, status=status.HTTP_204_NO_CONTENT)
+            # Get the first (oldest) line item for this product
+            line_item = OrderProduct.objects.filter(
+                product__id=pk, order=open_order
+            ).first()
 
+            if line_item is None:
+                return Response(
+                    {"detail": "Product not in cart."}, status=status.HTTP_404_NOT_FOUND
+                )
+
+            line_item.delete()
+
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        except Order.DoesNotExist:
+            return Response(
+                {"detail": "No active cart found."}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def list(self, request):
         """
@@ -109,25 +126,23 @@ class Cart(ViewSet):
         """
         current_user = Customer.objects.get(user=request.auth.user)
         try:
-            open_order = Order.objects.get(
-                customer=current_user, payment_type=None)
+            open_order = Order.objects.get(customer=current_user, payment_type=None)
 
-            products_on_order = Product.objects.filter(
-                lineitems__order=open_order)
+            products_on_order = Product.objects.filter(lineitems__order=open_order)
 
             serialized_order = OrderSerializer(
-                open_order, many=False, context={'request': request})
+                open_order, many=False, context={"request": request}
+            )
 
             product_list = ProductSerializer(
-                products_on_order, many=True, context={'request': request})
+                products_on_order, many=True, context={"request": request}
+            )
 
-            final = {
-                "order": serialized_order.data
-            }
+            final = {"order": serialized_order.data}
             final["order"]["products"] = product_list.data
             final["order"]["size"] = len(products_on_order)
 
         except Order.DoesNotExist as ex:
-            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(final["order"])
