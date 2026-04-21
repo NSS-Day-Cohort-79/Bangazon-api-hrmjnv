@@ -41,7 +41,44 @@ class Products(ViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request):
-        """Handle POST operations for creating a new product"""
+        """
+        @api {POST} /products POST new product
+        @apiName CreateProduct
+        @apiGroup Product
+
+        @apiHeader {String} Authorization Auth token
+        @apiHeaderExample {String} Authorization
+            Token 9ba45f09651c5b0c404f37a2d2572c026c146611
+
+        @apiParam {String} name Short form name of product
+        @apiParam {Number} price Cost of product
+        @apiParam {String} description Long form description of product
+        @apiParam {Number} quantity Number of items to sell
+        @apiParam {String} location City where product is located
+        @apiParam {Number} category_id Category of product
+        @apiParamExample {json} Input
+            {
+                "name": "Kite",
+                "price": 14.99,
+                "description": "It flies high",
+                "quantity": 60,
+                "location": "Pittsburgh",
+                "category_id": 4
+            }
+
+        @apiSuccess (200) {Object} product Created product
+        @apiSuccess (200) {id} product.id Product Id
+        @apiSuccess (200) {String} product.name Short form name of product
+        @apiSuccess (200) {String} product.description Long form description of product
+        @apiSuccess (200) {Number} product.price Cost of product
+        @apiSuccess (200) {Number} product.quantity Number of items to sell
+        @apiSuccess (200) {Date} product.created_date Date created
+        @apiSuccess (200) {String} product.location City where product is located
+        @apiSuccess (200) {String} product.image_path Path to product image
+        @apiSuccess (200) {Number} product.average_rating Average customer rating of product
+        @apiSuccess (200) {Number} product.number_sold How many items have been purchased
+        @apiSuccess (200) {Object} product.category Category of product
+        """
         new_product = Product()
         new_product.name = request.data["name"]
         new_product.price = request.data["price"]
@@ -71,7 +108,15 @@ class Products(ViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
-        """Handle GET requests for a single product"""
+        """
+        @api {GET} /products/:id GET product
+        @apiName GetProduct
+        @apiGroup Product
+
+        @apiParam {id} id Product Id
+
+        @apiSuccess (200) {Object} product Product details
+        """
         try:
             product = Product.objects.get(pk=pk)
             serializer = ProductSerializer(product, context={"request": request})
@@ -80,7 +125,16 @@ class Products(ViewSet):
             return HttpResponseServerError(ex)
 
     def update(self, request, pk=None):
-        """Handle PUT requests for updating a product"""
+        """
+        @api {PUT} /products/:id PUT changes to product
+        @apiName UpdateProduct
+        @apiGroup Product
+
+        @apiHeader {String} Authorization Auth token
+        @apiParam {id} id Product Id to update
+        @apiSuccessExample {json} Success
+            HTTP/1.1 204 No Content
+        """
         product = Product.objects.get(pk=pk)
         product.name = request.data["name"]
         product.price = request.data["price"]
@@ -99,7 +153,13 @@ class Products(ViewSet):
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request, pk=None):
-        """Handle DELETE requests for a product"""
+        """
+        @api {DELETE} /products/:id DELETE product
+        @apiName DeleteProduct
+        @apiGroup Product
+
+        @apiParam {id} id Product Id to delete
+        """
         try:
             product = Product.objects.get(pk=pk)
             product.delete()
@@ -114,7 +174,13 @@ class Products(ViewSet):
             )
 
     def list(self, request):
-        """Handle GET requests for all products, including filtering and ordering"""
+        """
+        @api {GET} /products GET all products
+        @apiName ListProducts
+        @apiGroup Product
+
+        @apiSuccess (200) {Object[]} products Array of products
+        """
         products = Product.objects.all()
 
         category = self.request.query_params.get("category", None)
@@ -138,15 +204,12 @@ class Products(ViewSet):
         if number_sold is not None:
 
             def sold_filter(product):
-                """Filter helper to return products sold >= requested amount"""
-                # OLD BUGGY CODE:
-                # if product.number_sold <= int(number_sold):
-                #     return True
-
-                # NEW FIXED CODE:
+                """
+                Filter products by number sold
+                """
+                # FIXED FOR TICKET 7:
                 if product.number_sold >= int(number_sold):
                     return True
-
                 return False
 
             products = filter(sold_filter, products)
@@ -158,7 +221,11 @@ class Products(ViewSet):
 
     @action(methods=["post"], detail=True)
     def recommend(self, request, pk=None):
-        """Custom action to recommend a product to another user"""
+        """
+        @api {POST} /products/:id/recommend Recommend product to another user
+        @apiName RecommendProduct
+        @apiGroup Product
+        """
         if request.method == "POST":
             rec = Recommendation()
             rec.recommender = Customer.objects.get(user=request.auth.user)
