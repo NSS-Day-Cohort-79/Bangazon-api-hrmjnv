@@ -63,36 +63,36 @@ class LineItems(ViewSet):
 
     def destroy(self, request, pk=None):
         """
-        @api {DELETE} /lineitems/:id DELETE line item from cart
-        @apiName RemoveLineItem
+           @api {DELETE} /lineitems/:id DELETE line item from cart
+           @apiName RemoveLineItem
         @apiGroup ShoppingCart
-        @apiParam {id} id Product Id to remove from cart
-        @apiSuccessExample {json} Success
-            HTTP/1.1 204 No Content
-        @apiErrorExample {json} Product Not In Cart
-            HTTP/1.1 404 Not Found
-         {
-                "detail": "Product not in cart."
+           @apiParam {id} id Product Id to remove from cart
+           @apiSuccessExample {json} Success
+           HTTP/1.1 204 No Content
+           @apiErrorExample {json} Product Not In Cart
+           HTTP/1.1 404 Not Found
+           {
+                   "detail": "Product not in cart."
             }
         """
 
-    try:
-        current_user = Customer.objects.get(user=request.auth.user)
-        open_order = Order.objects.get(customer=current_user, payment_type=None)
-        # Get the first (oldest) line item for this product
-        line_item = OrderProduct.objects.filter(
-            product__id=pk, order=open_order
-        ).first()
+        try:
+            current_user = Customer.objects.get(user=request.auth.user)
+            open_order = Order.objects.get(customer=current_user, payment_type=None)
+            # Get the first (oldest) line item for this product
+            line_item = OrderProduct.objects.filter(
+                product__id=pk, order=open_order
+            ).first()
 
-        if line_item is None:
+            if line_item is None:
+                return Response(
+                    {"detail": "Product not in cart."}, status=status.HTTP_404_NOT_FOUND
+                )
+
+            line_item.delete()
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        except Order.DoesNotExist:
             return Response(
-                {"detail": "Product not in cart."}, status=status.HTTP_404_NOT_FOUND
+                {"detail": "No active cart found."}, status=status.HTTP_404_NOT_FOUND
             )
-
-        line_item.delete()
-        return Response({}, status=status.HTTP_204_NO_CONTENT)
-
-    except Order.DoesNotExist:
-        return Response(
-            {"detail": "No active cart found."}, status=status.HTTP_404_NOT_FOUND
-        )
