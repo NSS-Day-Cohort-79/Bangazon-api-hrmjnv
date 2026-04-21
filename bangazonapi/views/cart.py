@@ -56,29 +56,13 @@ class Cart(ViewSet):
             "detail": "Product not in cart."
             }
         """
+        current_user = Customer.objects.get(user=request.auth.user)
+        open_order = Order.objects.get(customer=current_user, payment_type=None)
 
-        try:
-            current_user = Customer.objects.get(user=request.auth.user)
-            open_order = Order.objects.get(customer=current_user, payment_type=None)
-
-            # Get the first (oldest) line item for this product
-            line_item = OrderProduct.objects.filter(
-                product__id=pk, order=open_order
-            ).first()
-
-            if line_item is None:
-                return Response(
-                    {"detail": "Product not in cart."}, status=status.HTTP_404_NOT_FOUND
-                )
-
-            line_item.delete()
+        line_item = OrderProduct.objects.filter(product__id=pk, order=open_order)[0]
+        line_item.delete()
 
             return Response({}, status=status.HTTP_204_NO_CONTENT)
-
-        except Order.DoesNotExist:
-            return Response(
-                {"detail": "No active cart found."}, status=status.HTTP_404_NOT_FOUND
-            )
 
     def list(self, request):
         """
