@@ -41,6 +41,7 @@ class Products(ViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request):
+        """Handle POST operations for creating a new product"""
         new_product = Product()
         new_product.name = request.data["name"]
         new_product.price = request.data["price"]
@@ -70,6 +71,7 @@ class Products(ViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
+        """Handle GET requests for a single product"""
         try:
             product = Product.objects.get(pk=pk)
             serializer = ProductSerializer(product, context={"request": request})
@@ -78,6 +80,7 @@ class Products(ViewSet):
             return HttpResponseServerError(ex)
 
     def update(self, request, pk=None):
+        """Handle PUT requests for updating a product"""
         product = Product.objects.get(pk=pk)
         product.name = request.data["name"]
         product.price = request.data["price"]
@@ -96,6 +99,7 @@ class Products(ViewSet):
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request, pk=None):
+        """Handle DELETE requests for a product"""
         try:
             product = Product.objects.get(pk=pk)
             product.delete()
@@ -110,6 +114,7 @@ class Products(ViewSet):
             )
 
     def list(self, request):
+        """Handle GET requests for all products, including filtering and ordering"""
         products = Product.objects.all()
 
         category = self.request.query_params.get("category", None)
@@ -133,6 +138,7 @@ class Products(ViewSet):
         if number_sold is not None:
 
             def sold_filter(product):
+                """Filter helper to return products sold >= requested amount"""
                 # OLD BUGGY CODE:
                 # if product.number_sold <= int(number_sold):
                 #     return True
@@ -152,6 +158,7 @@ class Products(ViewSet):
 
     @action(methods=["post"], detail=True)
     def recommend(self, request, pk=None):
+        """Custom action to recommend a product to another user"""
         if request.method == "POST":
             rec = Recommendation()
             rec.recommender = Customer.objects.get(user=request.auth.user)
