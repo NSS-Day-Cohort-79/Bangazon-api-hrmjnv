@@ -25,10 +25,38 @@ class OrderLineItemSerializer(serializers.HyperlinkedModelSerializer):
         depth = 1
 
 
+class OrderPaymentSerializer(serializers.HyperlinkedModelSerializer):
+    """JSON serializer for Order Payment
+
+    Arguments:
+        serializers
+    """
+
+    obscured_num = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Payment
+        url = serializers.HyperlinkedIdentityField(
+            view_name="payment", lookup_field="id"
+        )
+        fields = (
+            "id",
+            "url",
+            "merchant_name",
+            "obscured_num",
+            "expiration_date",
+            "create_date",
+        )
+
+    def get_obscured_num(self, obj):
+        return "********" + obj.account_number[-4:]
+
+
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
     """JSON serializer for customer orders"""
 
     lineitems = OrderLineItemSerializer(many=True)
+    payment_type = OrderPaymentSerializer(many=False)
 
     class Meta:
         model = Order
