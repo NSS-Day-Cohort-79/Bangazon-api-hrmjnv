@@ -25,15 +25,59 @@ class OrderLineItemSerializer(serializers.HyperlinkedModelSerializer):
         depth = 1
 
 
+class OrderPaymentSerializer(serializers.HyperlinkedModelSerializer):
+    """JSON serializer for Order Payment
+
+    Arguments:
+        serializers
+    """
+
+    obscured_num = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Payment
+        url = serializers.HyperlinkedIdentityField(
+            view_name="payment", lookup_field="id"
+        )
+        fields = (
+            "id",
+            "url",
+            "merchant_name",
+            "obscured_num",
+            "expiration_date",
+            "create_date",
+        )
+
+    def get_obscured_num(self, obj):
+        return "********" + obj.account_number[-4:]
+
+
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
     """JSON serializer for customer orders"""
 
     lineitems = OrderLineItemSerializer(many=True)
+    payment_type = OrderPaymentSerializer(many=False)
+    total = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         url = serializers.HyperlinkedIdentityField(view_name="order", lookup_field="id")
-        fields = ("id", "url", "created_date", "payment_type", "customer", "lineitems")
+        fields = (
+            "id",
+            "url",
+            "created_date",
+            "completed_on",
+            "payment_type",
+            "customer",
+            "lineitems",
+            "total",
+        )
+
+    def get_total(self, obj):
+        total = 0
+        for lineitem in obj.lineitems.all():
+            total += lineitem.product.price
+        return total
 
 
 class Orders(ViewSet):
@@ -107,6 +151,7 @@ class Orders(ViewSet):
         payment = Payment.objects.get(pk=request.data["payment_type"])
         if payment.customer == customer:
             order.payment_type = payment
+            order.completed_on = datetime.datetime.now()
             order.save()
         else:
             return Response(
@@ -147,11 +192,7 @@ class Orders(ViewSet):
             ]
         """
         customer = Customer.objects.get(user=request.auth.user)
-        orders = Order.objects.filter(customer=customer)
-
-        payment = self.request.query_params.get("payment_id", None)
-        if payment is not None:
-            orders = orders.filter(payment__id=payment)
+        orders = Order.objects.filter(customer=customer, payment_type__isnull=False)
 
         json_orders = OrderSerializer(orders, many=True, context={"request": request})
 
