@@ -5,6 +5,7 @@
         "fields": {
             "customer_id": 5,
             "created_date": "2019-08-16",
+            "completed_on": "2019-09-20",
             "payment_type_id": 1
         }
     },
@@ -14,6 +15,7 @@
         "fields": {
             "customer_id": 7,
             "created_date": "2019-04-12",
+            "completed_on": null,
             "payment_type_id": null
         }
     },
@@ -23,6 +25,7 @@
         "fields": {
             "customer_id": 5,
             "created_date": "2019-03-26",
+            "completed_on": "2019-04-30",
             "payment_type_id": 1
         }
     },
@@ -32,6 +35,7 @@
         "fields": {
             "customer_id": 6,
             "created_date": "2019-01-16",
+            "completed_on": "2019-02-22",
             "payment_type_id": 2
         }
     },
@@ -41,6 +45,7 @@
         "fields": {
             "customer_id": 6,
             "created_date": "2019-05-22",
+            "completed_on": "2019-06-28",
             "payment_type_id": 2
         }
     },
@@ -50,6 +55,7 @@
         "fields": {
             "customer_id": 5,
             "created_date": "2019-07-01",
+            "completed_on": "2019-08-05",
             "payment_type_id": 1
         }
     },
@@ -59,6 +65,7 @@
         "fields": {
             "customer_id": 6,
             "created_date": "2019-05-27",
+            "completed_on": "2019-07-01",
             "payment_type_id": 2
         }
     },
@@ -68,6 +75,7 @@
         "fields": {
             "customer_id": 5,
             "created_date": "2019-03-14",
+            "completed_on": null,
             "payment_type_id": null
         }
     },
@@ -77,6 +85,7 @@
         "fields": {
             "customer_id": 6,
             "created_date": "2018-12-08",
+            "completed_on": null,
             "payment_type_id": null
         }
     },
@@ -86,6 +95,7 @@
         "fields": {
             "customer_id": 4,
             "created_date": "2018-11-03",
+            "completed_on": null,
             "payment_type_id": null
         }
     }
