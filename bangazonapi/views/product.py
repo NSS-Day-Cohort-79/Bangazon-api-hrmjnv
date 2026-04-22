@@ -354,7 +354,8 @@ class Products(ViewSet):
                 rating.customer = Customer.objects.get(user=request.auth.user)
                 rating.product = Product.objects.get(pk=pk)
 
-            rating.rating = request.data["rating"]
+            rating.score = request.data["score"]
+            rating.review = request.data["review"]
 
             try:
                 rating.full_clean()

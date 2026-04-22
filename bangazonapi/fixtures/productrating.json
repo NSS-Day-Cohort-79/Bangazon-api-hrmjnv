@@ -5,7 +5,8 @@
         "fields": {
             "product": 50,
             "customer": 4,
-            "rating": 4
+            "score": 4,
+            "review": "good"
         }
     },
     {
@@ -14,7 +15,8 @@
         "fields": {
             "product": 50,
             "customer": 5,
-            "rating": 3
+            "score": 3,
+            "review": "acceptable"
         }
     },
     {
@@ -23,7 +25,8 @@
         "fields": {
             "product": 50,
             "customer": 6,
-            "rating": 5
+            "score": 5,
+            "review": "great!"
         }
     },
     {
@@ -32,7 +35,8 @@
         "fields": {
             "product": 50,
             "customer": 7,
-            "rating": 1
+            "score": 1,
+            "review": "terrible!"
         }
     }
 ]
