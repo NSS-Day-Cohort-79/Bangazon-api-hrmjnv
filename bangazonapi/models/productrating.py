@@ -10,7 +10,7 @@ class ProductRating(models.Model):
     )
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     score = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
-    review = models.CharField()
+    review = models.CharField(blank=True)
 
 
 class Meta:
