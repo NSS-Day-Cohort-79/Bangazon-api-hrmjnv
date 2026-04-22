@@ -20,8 +20,18 @@ from bangazonapi.models import (
 )
 
 
+class ProductRatingSerializer(serializers.ModelSerializer):
+    """JSON serializer for product ratings"""
+
+    class Meta:
+        model = ProductRating
+        fields = ("id", "product", "customer", "score", "review")
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
+
+    ratings = ProductRatingSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -37,6 +47,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "image_path",
             "average_rating",
             "can_be_rated",
+            "ratings",
         )
         depth = 1
 
