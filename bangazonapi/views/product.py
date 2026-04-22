@@ -308,9 +308,17 @@ class Products(ViewSet):
         """Recommend products to other users"""
 
         if request.method == "POST":
+
+            try:
+                customer = Customer.objects.get(user__username=request.data["username"])
+            except Customer.DoesNotExist:
+                return Response(
+                    "Customer Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
             rec = Recommendation()
             rec.recommender = Customer.objects.get(user=request.auth.user)
-            rec.customer = Customer.objects.get(user__id=request.data["recipient"])
+            rec.customer = customer
             rec.product = Product.objects.get(pk=pk)
 
             rec.save()
