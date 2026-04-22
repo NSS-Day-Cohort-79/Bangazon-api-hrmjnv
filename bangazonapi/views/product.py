@@ -324,9 +324,28 @@ class Products(ViewSet):
         """Rate product for current user"""
 
         if request.method == "POST":
-            rating = ProductRating()
-            rating.customer = Customer.objects.get(user=request.auth.user)
-            rating.product = Product.objects.get(pk=pk)
+
+            try:
+                customer = Customer.objects.get(user=request.auth.user)
+            except Customer.DoesNotExist:
+                return Response(
+                    "Customer Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                product = Product.objects.get(pk=pk)
+            except Product.DoesNotExist:
+                return Response(
+                    "Product Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                rating = ProductRating.objects.get(customer=customer, product=product)
+            except ProductRating.DoesNotExist:
+                rating = ProductRating()
+                rating.customer = Customer.objects.get(user=request.auth.user)
+                rating.product = Product.objects.get(pk=pk)
+
             rating.rating = request.data["rating"]
 
             try:
