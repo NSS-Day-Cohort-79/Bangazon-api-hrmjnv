@@ -1,17 +1,23 @@
 """View module for handling requests about products"""
 
-from rest_framework.decorators import action
-from bangazonapi.models.recommendation import Recommendation
 import base64
-from django.core.files.base import ContentFile
-from django.http import HttpResponseServerError
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from bangazonapi.models import Product, Customer, ProductCategory
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.files.base import ContentFile
+from django.core.exceptions import ValidationError
+from django.http import HttpResponseServerError
+from bangazonapi.models import (
+    Product,
+    Customer,
+    ProductCategory,
+    ProductRating,
+    Recommendation,
+)
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -308,6 +314,26 @@ class Products(ViewSet):
             rec.product = Product.objects.get(pk=pk)
 
             rec.save()
+
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+        return Response(None, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(methods=["post"], detail=True)
+    def rate(self, request, pk=None):
+        """Rate product for current user"""
+
+        if request.method == "POST":
+            rating = ProductRating()
+            rating.customer = Customer.objects.get(user=request.auth.user)
+            rating.product = Product.objects.get(pk=pk)
+            rating.rating = request.data["rating"]
+
+            try:
+                rating.full_clean()
+                rating.save()
+            except ValidationError as e:
+                return Response(e, status=status.HTTP_400_BAD_REQUEST)
 
             return Response(None, status=status.HTTP_204_NO_CONTENT)
 
