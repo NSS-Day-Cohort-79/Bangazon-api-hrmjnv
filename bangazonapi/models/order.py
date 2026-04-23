@@ -14,4 +14,4 @@ class Order(models.Model):
     created_date = models.DateField(
         default="0000-00-00",
     )
-    completed_on = models.DateField(default="0000-00-00", null=True)
+    completed_on = models.DateField(null=True)
