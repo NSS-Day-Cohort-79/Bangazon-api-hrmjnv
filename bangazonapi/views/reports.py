@@ -22,30 +22,16 @@ def completed_orders_report(request):
     # Get the status parameter from the query string
     status_param = request.GET.get("status", None)
 
-    # Filter for completed orders (completed_on is not null and not the default date)
-    completed_orders = (
-        Order.objects.filter(completed_on__isnull=False)
-        .exclude(completed_on="0000-00-00")
-        .select_related(
-            "customer__user",  # Get the related User to access first/last name
-            "payment_type",  # Get the Payment details
-        )
-        .prefetch_related(
-            "orderproduct_set__product"  # Get all line items and their products
-        )
+    # Filter for completed orders (completed_on is not null)
+    # Orders with completed_on set to a real date are considered complete
+    completed_orders = Order.objects.filter(completed_on__isnull=False).select_related(
+        "customer__user",  # Get the related User to access first/last name
+        "payment_type",  # Get the Payment details
     )
 
-    # Calculate totals for each order
+    # Build order data
     orders_with_totals = []
     for order in completed_orders:
-        # Calculate order total from line items
-        order_total = 0
-        line_items = order.orderproduct_set.all()
-
-        for line_item in line_items:
-            if line_item.product:
-                order_total += line_item.product.price * line_item.quantity
-
         # Get customer name from the related User
         customer_name = (
             f"{order.customer.user.first_name} {order.customer.user.last_name}".strip()
@@ -55,6 +41,16 @@ def completed_orders_report(request):
         payment_type = (
             order.payment_type.merchant_name if order.payment_type else "Not Specified"
         )
+
+        # Query line items for this order to calculate total
+        # Each OrderProduct represents one product in the order (quantity of 1)
+        line_items = OrderProduct.objects.filter(order=order).select_related("product")
+        order_total = 0
+
+        for line_item in line_items:
+            if line_item.product:
+                # Each line item is a single product (no quantity field)
+                order_total += line_item.product.price
 
         orders_with_totals.append(
             {
