@@ -1,21 +1,37 @@
 """View module for handling requests about products"""
 
-from rest_framework.decorators import action
-from bangazonapi.models.recommendation import Recommendation
 import base64
-from django.core.files.base import ContentFile
-from django.http import HttpResponseServerError
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from bangazonapi.models import Product, Customer, ProductCategory
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.files.base import ContentFile
+from django.core.exceptions import ValidationError
+from django.http import HttpResponseServerError
+from bangazonapi.models import (
+    Product,
+    Customer,
+    ProductCategory,
+    ProductRating,
+    Recommendation,
+)
+
+
+class ProductRatingSerializer(serializers.ModelSerializer):
+    """JSON serializer for product ratings"""
+
+    class Meta:
+        model = ProductRating
+        fields = ("id", "product", "customer", "score", "review")
 
 
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
+
+    ratings = ProductRatingSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -31,6 +47,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "image_path",
             "average_rating",
             "can_be_rated",
+            "ratings",
         )
         depth = 1
 
@@ -306,12 +323,60 @@ class Products(ViewSet):
         """Recommend products to other users"""
 
         if request.method == "POST":
+
+            try:
+                customer = Customer.objects.get(user__username=request.data["username"])
+            except Customer.DoesNotExist:
+                return Response(
+                    "Customer Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
             rec = Recommendation()
             rec.recommender = Customer.objects.get(user=request.auth.user)
-            rec.customer = Customer.objects.get(user__id=request.data["recipient"])
+            rec.customer = customer
             rec.product = Product.objects.get(pk=pk)
 
             rec.save()
+
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+        return Response(None, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(methods=["post"], detail=True)
+    def rate(self, request, pk=None):
+        """Rate product for current user"""
+
+        if request.method == "POST":
+
+            try:
+                customer = Customer.objects.get(user=request.auth.user)
+            except Customer.DoesNotExist:
+                return Response(
+                    "Customer Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                product = Product.objects.get(pk=pk)
+            except Product.DoesNotExist:
+                return Response(
+                    "Product Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                rating = ProductRating.objects.get(customer=customer, product=product)
+            except ProductRating.DoesNotExist:
+                rating = ProductRating()
+                rating.customer = Customer.objects.get(user=request.auth.user)
+                rating.product = Product.objects.get(pk=pk)
+
+            rating.score = request.data["score"]
+            rating.review = request.data["review"]
+
+            try:
+                rating.full_clean()
+                rating.save()
+            except ValidationError as e:
+                return Response(e, status=status.HTTP_400_BAD_REQUEST)
 
             return Response(None, status=status.HTTP_204_NO_CONTENT)
 
