@@ -31,7 +31,35 @@ class StoreViewSet(ViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request):
-        """Handle POST operations"""
+        """
+        @api {POST} /stores POST new store
+        @apiName CreateStore
+        @apiGroup Store
+
+        @apiHeader {String} Authorization Auth token
+        @apiHeaderExample {String} Authorization
+            Token 9ba45f09651c5b0c404f37a2d2572c026c146611
+
+        @apiParam {String} name Name of the store
+        @apiParam {String} description Description of the store
+        @apiParamExample {json} Input
+            {
+                "name": "Steve's Shop",
+                "description": "All the latest cars at unbeatable prices."
+            }
+
+        @apiSuccess (201) {Object} store Created store
+        @apiSuccess (201) {Number} store.id Store Id
+        @apiSuccess (201) {String} store.name Name of the store
+        @apiSuccess (201) {String} store.description Description of the store
+        @apiSuccessExample {json} Success
+            HTTP/1.1 201 Created
+            {
+                "id": 1,
+                "name": "Steve's Shop",
+                "description": "All the latest cars at unbeatable prices."
+            }
+        """
         store = Store()
         store.name = request.data["name"]
         store.description = request.data["description"]
@@ -42,7 +70,28 @@ class StoreViewSet(ViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
-        """Handle GET request for a single store"""
+        """
+        @api {GET} /stores/:id GET store
+        @apiName GetStore
+        @apiGroup Store
+
+        @apiParam {Number} id Store Id
+
+        @apiSuccess (200) {Object} store Store object
+        @apiSuccess (200) {Number} store.id Store Id
+        @apiSuccess (200) {String} store.name Name of the store
+        @apiSuccess (200) {String} store.description Description of the store
+        @apiSuccess (200) {Object} store.user Owner of the store
+        @apiSuccess (200) {Object[]} store.products Products sold in the store
+        @apiSuccessExample {json} Success
+            {
+                "id": 1,
+                "name": "Steve's Shop",
+                "description": "All the latest cars at unbeatable prices.",
+                "user": { "id": 5, "username": "steve" },
+                "products": []
+            }
+        """
         try:
             store = Store.objects.get(pk=pk)
             serializer = StoreSerializer(store, context={"request": request})
@@ -53,7 +102,26 @@ class StoreViewSet(ViewSet):
             return HttpResponseServerError(ex)
 
     def update(self, request, pk=None):
-        """Handle PUT requests for a store"""
+        """
+        @api {PUT} /stores/:id PUT changes to store
+        @apiName UpdateStore
+        @apiGroup Store
+
+        @apiHeader {String} Authorization Auth token
+        @apiHeaderExample {String} Authorization
+            Token 9ba45f09651c5b0c404f37a2d2572c026c146611
+
+        @apiParam {Number} id Store Id to update
+        @apiParam {String} name Updated name of the store
+        @apiParam {String} description Updated description of the store
+        @apiParamExample {json} Input
+            {
+                "name": "Steve's Updated Shop",
+                "description": "Updated description."
+            }
+        @apiSuccessExample {json} Success
+            HTTP/1.1 204 No Content
+        """
         store = Store.objects.get(pk=pk)
 
         if store.user != request.auth.user:
@@ -66,7 +134,19 @@ class StoreViewSet(ViewSet):
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request, pk=None):
-        """Handle DELETE requests for a store"""
+        """
+        @api {DELETE} /stores/:id DELETE store
+        @apiName DeleteStore
+        @apiGroup Store
+
+        @apiHeader {String} Authorization Auth token
+        @apiHeaderExample {String} Authorization
+            Token 9ba45f09651c5b0c404f37a2d2572c026c146611
+
+        @apiParam {Number} id Store Id to delete
+        @apiSuccessExample {json} Success
+            HTTP/1.1 204 No Content
+        """
         try:
             store = Store.objects.get(pk=pk)
 
@@ -81,7 +161,25 @@ class StoreViewSet(ViewSet):
             return HttpResponseServerError(ex)
 
     def list(self, request):
-        """Handle GET requests for all stores"""
+        """
+        @api {GET} /stores GET all stores
+        @apiName ListStores
+        @apiGroup Store
+
+        @apiQuery {String} [mine] If present, returns only stores owned by the current user
+
+        @apiSuccess (200) {Object[]} stores Array of store objects
+        @apiSuccessExample {json} Success
+            [
+                {
+                    "id": 1,
+                    "name": "Steve's Shop",
+                    "description": "All the latest cars at unbeatable prices.",
+                    "user": { "id": 5, "username": "steve" },
+                    "products": []
+                }
+            ]
+        """
         stores = Store.objects.all()
 
         mine = self.request.query_params.get("mine", None)
