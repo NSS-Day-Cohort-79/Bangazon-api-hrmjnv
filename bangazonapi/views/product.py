@@ -17,6 +17,7 @@ from bangazonapi.models import (
     ProductCategory,
     ProductRating,
     Recommendation,
+    Store,
 )
 
 
@@ -126,6 +127,9 @@ class Products(ViewSet):
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         new_product.category = product_category
+
+        store = Store.objects.get(pk=request.data["store_id"])
+        new_product.store = store
 
         if "image_path" in request.data:
             format, imgstr = request.data["image_path"].split(";base64,")
