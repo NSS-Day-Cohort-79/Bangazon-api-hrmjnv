@@ -6,13 +6,16 @@ from rest_framework import serializers
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from bangazonapi.models import Store
+from .product import ProductSerializer
 
 
 class StoreSerializer(serializers.ModelSerializer):
     """JSON serializer for stores"""
+    products = ProductSerializer(many=True, read_only=True)
+
     class Meta:
         model = Store
-        fields = ('id', 'user', 'name', 'description')
+        fields = ('id', 'user', 'name', 'description', 'products')
         depth = 1
 
 
@@ -37,6 +40,17 @@ class StoreViewSet(ViewSet):
 
         serializer = StoreCreateSerializer(store, context={"request": request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, pk=None):
+        """Handle GET request for a single store"""
+        try:
+            store = Store.objects.get(pk=pk)
+            serializer = StoreSerializer(store, context={"request": request})
+            return Response(serializer.data)
+        except Store.DoesNotExist as ex:
+            return Response({"message": ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as ex:
+            return HttpResponseServerError(ex)
 
     def update(self, request, pk=None):
         """Handle PUT requests for a store"""

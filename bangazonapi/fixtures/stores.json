@@ -34,14 +34,5 @@
             "name": "The Shop",
             "description": "New and used cars across every brand."
         }
-    },
-    {
-        "model": "bangazonapi.store",
-        "pk": 5,
-        "fields": {
-            "user": 5,
-            "name": "Vintage Shop",
-            "description": "Unique vintage and antique items curated just for you."
-        }
     }
 ]

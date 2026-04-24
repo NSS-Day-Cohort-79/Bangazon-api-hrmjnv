@@ -76,7 +76,7 @@
             "category_id": 2,
             "location": "Seoul",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -156,7 +156,7 @@
             "category_id": 2,
             "location": "Vienna",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -236,7 +236,7 @@
             "category_id": 2,
             "location": "New York",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -316,7 +316,7 @@
             "category_id": 2,
             "location": "Paris",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -396,7 +396,7 @@
             "category_id": 2,
             "location": "New York",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -476,7 +476,7 @@
             "category_id": 2,
             "location": "Paris",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -556,7 +556,7 @@
             "category_id": 2,
             "location": "New York",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -636,7 +636,7 @@
             "category_id": 2,
             "location": "Berlin",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -716,7 +716,7 @@
             "category_id": 2,
             "location": "Toronto",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -796,7 +796,7 @@
             "category_id": 2,
             "location": "Berlin",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -876,7 +876,7 @@
             "category_id": 2,
             "location": "London",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -956,7 +956,7 @@
             "category_id": 2,
             "location": "Berlin",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1036,7 +1036,7 @@
             "category_id": 2,
             "location": "London",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1116,7 +1116,7 @@
             "category_id": 2,
             "location": "Moscow",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1196,7 +1196,7 @@
             "category_id": 2,
             "location": "London",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1276,7 +1276,7 @@
             "category_id": 2,
             "location": "Moscow",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1356,7 +1356,7 @@
             "category_id": 2,
             "location": "London",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1436,7 +1436,7 @@
             "category_id": 2,
             "location": "Moscow",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1516,7 +1516,7 @@
             "category_id": 2,
             "location": "London",
             "image_path": "products/optima.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1596,7 +1596,7 @@
             "category_id": 2,
             "location": "Moscow",
             "image_path": "products/golf.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1676,7 +1676,7 @@
             "category_id": 5,
             "location": "Sydney",
             "image_path": "products/socks.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1756,7 +1756,7 @@
             "category_id": 5,
             "location": "Berlin",
             "image_path": "products/sweater.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1836,7 +1836,7 @@
             "category_id": 5,
             "location": "Paris",
             "image_path": "products/t-shirt.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1916,7 +1916,7 @@
             "category_id": 5,
             "location": "London",
             "image_path": "products/t-shirt.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -1996,7 +1996,7 @@
             "category_id": 5,
             "location": "Moscow",
             "image_path": "products/jacket.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -2076,7 +2076,7 @@
             "category_id": 1,
             "location": "Workshop",
             "image_path": "products/wrench-set.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -2156,7 +2156,7 @@
             "category_id": 1,
             "location": "Workshop",
             "image_path": "products/screwdriver-set.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -2236,7 +2236,7 @@
             "category_id": 1,
             "location": "Workshop",
             "image_path": "products/electric-drill.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -2316,7 +2316,7 @@
             "category_id": 1,
             "location": "Workshop",
             "image_path": "products/utility-knife.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -2396,7 +2396,7 @@
             "category_id": 1,
             "location": "Workshop",
             "image_path": "products/chisel-set.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -2476,7 +2476,7 @@
             "category_id": 1,
             "location": "Workshop",
             "image_path": "products/level.png",
-            "store_id": 5
+            "store_id": 1
         }
     },
     {
@@ -2556,7 +2556,7 @@
             "category_id": 1,
             "location": "Workshop",
             "image_path": "products/screwdriver-set.png",
-            "store_id": 5
+            "store_id": 1
         }
     }
 ]
