@@ -400,7 +400,7 @@ class Products(ViewSet):
 
         return Response(None, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    @action(methods=["post"], detail=True)
+    @action(methods=["post", "delete"], detail=True)
     def like(self, request, pk=None):
         """like product"""
 
@@ -430,6 +430,30 @@ class Products(ViewSet):
             like.customer = customer
             like.product = product
             like.save()
+
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
+        
+        if request.method == "DELETE":
+
+            try:
+                customer = Customer.objects.get(user=request.auth.user)
+            except Customer.DoesNotExist:
+                return Response(
+                    "Customer Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                product = Product.objects.get(pk=pk)
+            except Product.DoesNotExist:
+                return Response(
+                    "Product Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                like = ProductLike.objects.get(customer=customer, product=product)
+                like.delete()
+            except ProductLike.DoesNotExist:
+                pass
 
             return Response(None, status=status.HTTP_204_NO_CONTENT)
 
