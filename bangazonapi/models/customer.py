@@ -10,9 +10,9 @@ class Customer(models.Model):
     likes = models.ManyToManyField('Product', through='ProductLike', related_name="customer_likes")
 
     @property
-    def recommends(self):
+    def recommended_by(self):
         return self.__recommends
 
-    @recommends.setter
-    def recommends(self, value):
+    @recommended_by.setter
+    def recommended_by(self, value):
         self.__recommends = value

@@ -84,7 +84,7 @@ class Profile(ViewSet):
         """
         try:
             current_user = Customer.objects.get(user=request.auth.user)
-            current_user.recommends = Recommendation.objects.filter(
+            current_user.recommended_by = Recommendation.objects.filter(
                 recommender=current_user
             )
 
@@ -364,6 +364,9 @@ class ProfileProductSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "price",
+            "description",
+            "image_path",
         )
 
 
@@ -389,7 +392,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
 
     user = UserSerializer(many=False)
-    recommends = RecommenderSerializer(many=True)
+    recommended_by = RecommenderSerializer(many=True)
+    likes = ProfileProductSerializer(many=True)
 
     class Meta:
         model = Customer
@@ -400,7 +404,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "phone_number",
             "address",
             "payment_types",
-            "recommends",
+            "recommended_by",
             "likes",
         )
         depth = 1
