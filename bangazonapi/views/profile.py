@@ -390,7 +390,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     user = UserSerializer(many=False)
     recommends = RecommenderSerializer(many=True)
-    likes = serializers.SerializerMethodField()
 
     class Meta:
         model = Customer
@@ -405,10 +404,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             "likes",
         )
         depth = 1
-
-    def get_likes(self, obj):
-        likes = ProductLike.objects.filter(customer=obj.id)
-        return ProductLikeSerializer(likes, many=True).data
 
 
 class FavoriteUserSerializer(serializers.HyperlinkedModelSerializer):
