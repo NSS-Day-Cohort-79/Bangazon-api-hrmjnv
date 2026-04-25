@@ -28,11 +28,20 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         model = ProductRating
         fields = ("id", "product", "customer", "score", "review")
 
+class ProductLikeSerializer(serializers.ModelSerializer):
+    """JSON serializer for product likes"""
+
+    class Meta:
+        model = ProductLike
+        fields = ("id", "product", "customer")
+
 
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
 
     ratings = ProductRatingSerializer(many=True, read_only=True)
+    likes = ProductLikeSerializer(many=True, read_only=True)
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -49,8 +58,16 @@ class ProductSerializer(serializers.ModelSerializer):
             "average_rating",
             "can_be_rated",
             "ratings",
+            "likes",
+            "is_liked",
         )
         depth = 1
+
+    def get_is_liked(self, obj):
+        user = self.context["request"].user
+        if not user.is_authenticated:
+            return False
+        return ProductLike.objects.filter(product_id=obj.id, customer=Customer.objects.get(user=user)).exists()
 
 
 class Products(ViewSet):
