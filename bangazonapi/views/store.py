@@ -5,18 +5,26 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django.contrib.auth.models import User
 from bangazonapi.models import Store
 from .product import ProductSerializer
+
+
+class StoreUserSerializer(serializers.ModelSerializer):
+    """JSON serializer for store owner — exposes only first and last name"""
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name')
 
 
 class StoreSerializer(serializers.ModelSerializer):
     """JSON serializer for stores"""
     products = ProductSerializer(many=True, read_only=True)
+    user = StoreUserSerializer(read_only=True)
 
     class Meta:
         model = Store
         fields = ('id', 'user', 'name', 'description', 'products')
-        depth = 1
 
 
 class StoreCreateSerializer(serializers.ModelSerializer):
