@@ -20,11 +20,11 @@ class StoreUserSerializer(serializers.ModelSerializer):
 class StoreSerializer(serializers.ModelSerializer):
     """JSON serializer for stores"""
     products = ProductSerializer(many=True, read_only=True)
-    user = StoreUserSerializer(read_only=True)
+    seller = StoreUserSerializer(read_only=True)
 
     class Meta:
         model = Store
-        fields = ('id', 'user', 'name', 'description', 'products')
+        fields = ('id', 'seller', 'name', 'description', 'products')
 
 
 class StoreCreateSerializer(serializers.ModelSerializer):
@@ -71,7 +71,7 @@ class StoreViewSet(ViewSet):
         store = Store()
         store.name = request.data["name"]
         store.description = request.data["description"]
-        store.user = request.auth.user
+        store.seller = request.auth.user
         store.save()
 
         serializer = StoreCreateSerializer(store, context={"request": request})
@@ -132,7 +132,7 @@ class StoreViewSet(ViewSet):
         """
         store = Store.objects.get(pk=pk)
 
-        if store.user != request.auth.user:
+        if store.seller != request.auth.user:
             return Response({"message": "You do not have permission to edit this store."}, status=status.HTTP_403_FORBIDDEN)
 
         store.name = request.data["name"]
@@ -158,7 +158,7 @@ class StoreViewSet(ViewSet):
         try:
             store = Store.objects.get(pk=pk)
 
-            if store.user != request.auth.user:
+            if store.seller != request.auth.user:
                 return Response({"message": "You do not have permission to delete this store."}, status=status.HTTP_403_FORBIDDEN)
 
             store.delete()
