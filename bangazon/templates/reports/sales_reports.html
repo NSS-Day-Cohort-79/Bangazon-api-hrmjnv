@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Reports - Bangazon</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="node_modules/bulma-graphs/custom.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .report-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .report-header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .report-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .graph-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="report-header">
+        <div class="container">
+            <h1>Sales Reports</h1>
+            <p>Top performing products and categories</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="graph-card">
+            <h2 class="title is-4">Top 10 Items by Sales Volume</h2>
+            <div class="graphs-container" data-title="Items Sold">
+                <div class="data-container columns">
+                    <div data-title="Wireless Headphones" data-value="95"></div>
+                    <div data-title="USB-C Cable" data-value="88"></div>
+                    <div data-title="Phone Case" data-value="82"></div>
+                    <div data-title="Screen Protector" data-value="79"></div>
+                    <div data-title="Laptop Stand" data-value="71"></div>
+                    <div data-title="Keyboard" data-value="65"></div>
+                    <div data-title="Mouse" data-value="58"></div>
+                    <div data-title="Webcam" data-value="52"></div>
+                    <div data-title="Monitor" data-value="48"></div>
+                    <div data-title="Desk Lamp" data-value="42"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="graph-card">
+            <h2 class="title is-4">Sales by Category</h2>
+            <div class="graphs-container" data-title="Categories">
+                <div class="data-container is-vertical-graph">
+                    <div data-title="Electronics" data-value="100"></div>
+                    <div data-title="Accessories" data-value="85"></div>
+                    <div data-title="Home Office" data-value="72"></div>
+                    <div data-title="Mobile" data-value="65"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="node_modules/bulma-graphs/graphs.js"></script>
+</body>
+</html>
