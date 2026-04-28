@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from bangazonapi.models import Order, Customer, Product
 from bangazonapi.models import OrderProduct, Favorite
-from bangazonapi.models import Recommendation
-from .product import ProductSerializer
+from bangazonapi.models import Recommendation, ProductLike
+from .product import ProductSerializer, ProductLikeSerializer
 from .order import OrderSerializer
 
 
@@ -84,8 +84,11 @@ class Profile(ViewSet):
         """
         try:
             current_user = Customer.objects.get(user=request.auth.user)
-            current_user.recommends = Recommendation.objects.filter(
+            current_user.recommended_by = Recommendation.objects.filter(
                 recommender=current_user
+            )
+            current_user.recommendations = Recommendation.objects.filter(
+                customer=current_user
             )
 
             serializer = ProfileSerializer(
@@ -364,6 +367,9 @@ class ProfileProductSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "price",
+            "description",
+            "image_path",
         )
 
 
@@ -389,7 +395,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
 
     user = UserSerializer(many=False)
-    recommends = RecommenderSerializer(many=True)
+    recommended_by = RecommenderSerializer(many=True)
+    recommendations = RecommenderSerializer(many=True)
+    likes = ProfileProductSerializer(many=True)
 
     class Meta:
         model = Customer
@@ -400,7 +408,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             "phone_number",
             "address",
             "payment_types",
-            "recommends",
+            "recommended_by",
+            "recommendations",
+            "likes",
         )
         depth = 1
 
