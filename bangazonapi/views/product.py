@@ -17,11 +17,8 @@ from bangazonapi.models import (
     ProductCategory,
     ProductRating,
     Recommendation,
-<<<<<<< HEAD
     Store,
-=======
     ProductLike
->>>>>>> develop
 )
 
 

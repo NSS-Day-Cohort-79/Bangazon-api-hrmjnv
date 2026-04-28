@@ -401,7 +401,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
 
     user = UserSerializer(many=False)
-<<<<<<< HEAD
     recommends = RecommenderSerializer(many=True)
     store = serializers.SerializerMethodField()
 
@@ -411,11 +410,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             return ProfileStoreSerializer(store).data
         except Store.DoesNotExist:
             return None
-=======
     recommended_by = RecommenderSerializer(many=True)
     recommendations = RecommenderSerializer(many=True)
     likes = ProfileProductSerializer(many=True)
->>>>>>> develop
 
     class Meta:
         model = Customer
@@ -426,14 +423,11 @@ class ProfileSerializer(serializers.ModelSerializer):
             "phone_number",
             "address",
             "payment_types",
-<<<<<<< HEAD
             "recommends",
             "store",
-=======
             "recommended_by",
             "recommendations",
             "likes",
->>>>>>> develop
         )
         depth = 1
 
