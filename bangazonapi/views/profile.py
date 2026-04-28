@@ -401,7 +401,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
 
     user = UserSerializer(many=False)
-    recommends = RecommenderSerializer(many=True)
     store = serializers.SerializerMethodField()
 
     def get_store(self, obj):
@@ -423,7 +422,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             "phone_number",
             "address",
             "payment_types",
-            "recommends",
             "store",
             "recommended_by",
             "recommendations",
