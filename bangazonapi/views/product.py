@@ -61,6 +61,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "ratings",
             "likes",
             "is_liked",
+            "store",
+            "category",
         )
         depth = 1
 
@@ -235,7 +237,6 @@ class Products(ViewSet):
         product.price = request.data["price"]
         product.description = request.data["description"]
         product.quantity = request.data["quantity"]
-        product.created_date = request.data["created_date"]
         product.location = request.data["location"]
 
         product.customer = customer
