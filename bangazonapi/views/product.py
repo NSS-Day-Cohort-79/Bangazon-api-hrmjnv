@@ -17,7 +17,7 @@ from bangazonapi.models import (
     ProductCategory,
     ProductRating,
     Recommendation,
-    ProductLike
+    ProductLike,
 )
 
 
@@ -27,6 +27,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductRating
         fields = ("id", "product", "customer", "score", "review")
+
 
 class ProductLikeSerializer(serializers.ModelSerializer):
     """JSON serializer for product likes"""
@@ -67,7 +68,9 @@ class ProductSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         if not user.is_authenticated:
             return False
-        return ProductLike.objects.filter(product_id=obj.id, customer=Customer.objects.get(user=user)).exists()
+        return ProductLike.objects.filter(
+            product_id=obj.id, customer=Customer.objects.get(user=user)
+        ).exists()
 
 
 class Products(ViewSet):
@@ -302,6 +305,7 @@ class Products(ViewSet):
         order = self.request.query_params.get("order_by", None)
         direction = self.request.query_params.get("direction", None)
         number_sold = self.request.query_params.get("number_sold", None)
+        location = self.request.query_params.get("location", None)
 
         if order is not None:
             order_filter = order
@@ -314,6 +318,9 @@ class Products(ViewSet):
 
         if category is not None:
             products = products.filter(category__id=category)
+
+        if location is not None:
+            products = products.filter(location=location)
 
         if quantity is not None:
             products = products.order_by("-created_date")[: int(quantity)]
@@ -428,7 +435,7 @@ class Products(ViewSet):
             like.save()
 
             return Response(None, status=status.HTTP_204_NO_CONTENT)
-        
+
         if request.method == "DELETE":
 
             try:
