@@ -17,7 +17,11 @@ from bangazonapi.models import (
     ProductCategory,
     ProductRating,
     Recommendation,
+<<<<<<< HEAD
     Store,
+=======
+    ProductLike
+>>>>>>> develop
 )
 
 
@@ -28,11 +32,20 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         model = ProductRating
         fields = ("id", "product", "customer", "score", "review")
 
+class ProductLikeSerializer(serializers.ModelSerializer):
+    """JSON serializer for product likes"""
+
+    class Meta:
+        model = ProductLike
+        fields = ("id", "product", "customer")
+
 
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
 
     ratings = ProductRatingSerializer(many=True, read_only=True)
+    likes = ProductLikeSerializer(many=True, read_only=True)
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -49,8 +62,16 @@ class ProductSerializer(serializers.ModelSerializer):
             "average_rating",
             "can_be_rated",
             "ratings",
+            "likes",
+            "is_liked",
         )
         depth = 1
+
+    def get_is_liked(self, obj):
+        user = self.context["request"].user
+        if not user.is_authenticated:
+            return False
+        return ProductLike.objects.filter(product_id=obj.id, customer=Customer.objects.get(user=user)).exists()
 
 
 class Products(ViewSet):
@@ -388,6 +409,65 @@ class Products(ViewSet):
                 rating.save()
             except ValidationError as e:
                 return Response(e, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+        return Response(None, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(methods=["post", "delete"], detail=True)
+    def like(self, request, pk=None):
+        """like product"""
+
+        if request.method == "POST":
+
+            try:
+                customer = Customer.objects.get(user=request.auth.user)
+            except Customer.DoesNotExist:
+                return Response(
+                    "Customer Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                product = Product.objects.get(pk=pk)
+            except Product.DoesNotExist:
+                return Response(
+                    "Product Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                like = ProductLike.objects.get(customer=customer, product=product)
+                return Response(None, status=status.HTTP_204_NO_CONTENT)
+            except ProductLike.DoesNotExist:
+                pass
+
+            like = ProductLike()
+            like.customer = customer
+            like.product = product
+            like.save()
+
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
+        
+        if request.method == "DELETE":
+
+            try:
+                customer = Customer.objects.get(user=request.auth.user)
+            except Customer.DoesNotExist:
+                return Response(
+                    "Customer Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                product = Product.objects.get(pk=pk)
+            except Product.DoesNotExist:
+                return Response(
+                    "Product Does not Exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+            try:
+                like = ProductLike.objects.get(customer=customer, product=product)
+                like.delete()
+            except ProductLike.DoesNotExist:
+                pass
 
             return Response(None, status=status.HTTP_204_NO_CONTENT)
 

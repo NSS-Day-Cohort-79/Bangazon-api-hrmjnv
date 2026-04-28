@@ -1,0 +1,34 @@
+[
+  {
+    "model": "bangazonapi.productlike",
+    "pk": 1,
+    "fields": {
+      "product": 50,
+      "customer": 4
+    }
+  },
+  {
+    "model": "bangazonapi.productlike",
+    "pk": 2,
+    "fields": {
+      "product": 50,
+      "customer": 5
+    }
+  },
+  {
+    "model": "bangazonapi.productlike",
+    "pk": 3,
+    "fields": {
+      "product": 50,
+      "customer": 6
+    }
+  },
+  {
+    "model": "bangazonapi.productlike",
+    "pk": 4,
+    "fields": {
+      "product": 50,
+      "customer": 7
+    }
+  }
+]
