@@ -1,5 +1,3 @@
-"""View module for handling reports"""
-
 from django.shortcuts import render
 from django.db.models import Sum, F, DecimalField, Count
 from django.db.models.functions import Coalesce
@@ -17,8 +15,6 @@ def completed_orders_report(request):
     - Customer name
     - Total paid for the order
     - Payment type (merchant name)
-    - Most sold items chart
-    - Sales by category chart
     """
 
     # Get the status parameter from the query string
@@ -64,33 +60,13 @@ def completed_orders_report(request):
             }
         )
 
-    # Get most sold items from completed orders
-    most_sold_items = (
-        OrderProduct.objects.filter(order__completed_on__isnull=False)
-        .values("product__title")
-        .annotate(times_sold=Count("id"))
-        .order_by("-times_sold")[:10]
-    )
-
-    # Get sales by category from completed orders
-    sales_by_category = (
-        OrderProduct.objects.filter(order__completed_on__isnull=False)
-        .values("product__category__label")
-        .annotate(times_sold=Count("id"))
-        .order_by("-times_sold")
-    )
-
-    # Find max values for scaling charts (normalize to 100)
-    max_item_sales = most_sold_items[0]["times_sold"] if most_sold_items else 1
-    max_category_sales = sales_by_category[0]["times_sold"] if sales_by_category else 1
+    # Calculate total revenue
+    total_revenue = sum(order["total"] for order in orders_with_totals)
 
     context = {
         "orders": orders_with_totals,
         "status": status_param,
-        "most_sold_items": most_sold_items,
-        "sales_by_category": sales_by_category,
-        "max_item_sales": max_item_sales,
-        "max_category_sales": max_category_sales,
+        "total_revenue": total_revenue,
     }
 
-    return render(request, "reports/completed_orders.html", context)
+    return render(request, "bangazonapi/completed_orders.html", context)
