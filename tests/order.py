@@ -49,22 +49,21 @@ class OrderTests(APITestCase):
         Ensure we can add a product to an order.
         """
         # Add product to order
-        url = "/cart"
+        url = "/profile/cart"
         data = {"product_id": 1}
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token)
         response = self.client.post(url, data, format="json")
 
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Get cart and verify product was added
-        url = "/cart"
+        url = "/profile/cart"
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token)
         response = self.client.get(url, None, format="json")
         json_response = json.loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json_response["id"], 1)
-        self.assertEqual(json_response["size"], 1)
         self.assertEqual(len(json_response["lineitems"]), 1)
 
     def test_remove_product_from_order(self):
@@ -75,7 +74,7 @@ class OrderTests(APITestCase):
         self.test_add_product_to_order()
 
         # Remove product from cart
-        url = "/cart/1"
+        url = "/lineitems/1"
         data = {"product_id": 1}
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token)
         response = self.client.delete(url, data, format="json")
@@ -83,16 +82,14 @@ class OrderTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # Get cart and verify product was removed
-        url = "/cart"
+        url = "/profile/cart"
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token)
         response = self.client.get(url, None, format="json")
         json_response = json.loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(json_response["size"], 0)
         self.assertEqual(len(json_response["lineitems"]), 0)
 
-    # Complete order by adding payment type
     def test_complete_order(self):
         """
         Ensure order is completed by adding payment type
@@ -119,5 +116,28 @@ class OrderTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json_response["payment_type"]["id"], 1)
 
-    # TODO: New line item is not added to closed order
+    def test_start_new_order(self):
+        """
+        Ensure new line item is not added to closed order
+        """
 
+        # Added payment to order
+        self.test_complete_order()
+
+        # Add product to empty cart
+        url = "/profile/cart"
+        data = {"product_id": 1}
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token)
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Get cart and verify new order id
+        url = "/profile/cart"
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token)
+        response = self.client.get(url, None, format="json")
+        json_response = json.loads(response.content)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json_response["id"], 2)
+        self.assertEqual(len(json_response["lineitems"]), 1)
