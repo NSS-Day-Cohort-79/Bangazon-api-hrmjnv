@@ -11,6 +11,7 @@ from rest_framework import status
 from django.core.files.base import ContentFile
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseServerError
+from django.contrib.auth.models import User
 from bangazonapi.models import (
     Product,
     Customer,
@@ -36,6 +37,11 @@ class ProductLikeSerializer(serializers.ModelSerializer):
         model = ProductLike
         fields = ("id", "product", "customer")
 
+class ProductStoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ('id', 'name')
+
 
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
@@ -43,6 +49,7 @@ class ProductSerializer(serializers.ModelSerializer):
     ratings = ProductRatingSerializer(many=True, read_only=True)
     likes = ProductLikeSerializer(many=True, read_only=True)
     is_liked = serializers.SerializerMethodField()
+    store = ProductStoreSerializer()
 
     class Meta:
         model = Product
@@ -135,21 +142,25 @@ class Products(ViewSet):
                 }
             }
         """
+
+        store = Store.objects.get(pk=request.data["store_id"])
+
+        if store.seller != request.auth.user:
+            return Response({"message": "You do not have permission to add products to this store."}, status=status.HTTP_403_FORBIDDEN)
+
         new_product = Product()
         new_product.name = request.data["name"]
         new_product.price = request.data["price"]
         new_product.description = request.data["description"]
         new_product.quantity = request.data["quantity"]
         new_product.location = request.data["location"]
-
-        customer = Customer.objects.get(user=request.auth.user)
-        new_product.customer = customer
+        new_product.store = store
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         new_product.category = product_category
 
-        store = Store.objects.get(pk=request.data["store_id"])
-        new_product.store = store
+
+        
 
         if "image_path" in request.data:
             format, imgstr = request.data["image_path"].split(";base64,")
@@ -228,9 +239,8 @@ class Products(ViewSet):
             HTTP/1.1 204 No Content
         """
         product = Product.objects.get(pk=pk)
-
-        customer = Customer.objects.get(user=request.auth.user)
-        if product.customer != customer:
+        store = Store.objects.get(pk=request.data["store_id"])
+        if store.seller != request.auth.user:
             return Response({"message": "You do not have permission to edit this product."}, status=status.HTTP_403_FORBIDDEN)
 
         product.name = request.data["name"]
@@ -238,8 +248,6 @@ class Products(ViewSet):
         product.description = request.data["description"]
         product.quantity = request.data["quantity"]
         product.location = request.data["location"]
-
-        product.customer = customer
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         product.category = product_category
@@ -263,8 +271,8 @@ class Products(ViewSet):
         """
         try:
             product = Product.objects.get(pk=pk)
-            customer = Customer.objects.get(user=request.auth.user)
-            if product.customer != customer:
+            store = Store.objects.get(pk=request.data["store_id"])
+            if store.seller != request.auth.user:
                 return Response({"message": "You do not have permission to delete this product."}, status=status.HTTP_403_FORBIDDEN)
             product.delete()
 

@@ -192,7 +192,7 @@ class StoreViewSet(ViewSet):
 
         mine = self.request.query_params.get("mine", None)
         if mine is not None:
-            stores = stores.filter(user=request.auth.user)
+            stores = stores.filter(seller=request.auth.user)
 
         serializer = StoreSerializer(stores, many=True, context={"request": request})
         return Response(serializer.data)
