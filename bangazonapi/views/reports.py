@@ -9,7 +9,7 @@ from datetime import datetime
 
 class reports(ViewSet):
 
-    @action(methods=["get"], details=False)
+    @action(methods=["get"], detail=False)
     def reports(self, request):
         """
         View to display a report of all completed orders (paid orders).
