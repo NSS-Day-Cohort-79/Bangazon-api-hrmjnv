@@ -1,72 +1,81 @@
 from django.shortcuts import render
 from django.db.models import Sum, F, DecimalField, Count
 from django.db.models.functions import Coalesce
+from rest_framework.viewsets import ViewSet
+from rest_framework.decorators import action
 from bangazonapi.models import Order, OrderProduct, Product, ProductCategory
 from datetime import datetime
 
 
-def completed_orders_report(request):
-    """
-    View to display a report of all completed orders (paid orders).
-    Accessed at /reports/orders?status=complete
+class reports(ViewSet):
 
-    Shows:
-    - Order ID
-    - Customer name
-    - Total paid for the order
-    - Payment type (merchant name)
-    """
+    @action(methods=["get"], details=False)
+    def reports(self, request):
+        """
+        View to display a report of all completed orders (paid orders).
+        Accessed at /reports/orders?status=complete
 
-    # Get the status parameter from the query string
-    status_param = request.GET.get("status", None)
+        Shows:
+        - Order ID
+        - Customer name
+        - Total paid for the order
+        - Payment type (merchant name)
+        """
 
-    # Filter for completed orders (completed_on is not null)
-    # Orders with completed_on set to a real date are considered complete
-    completed_orders = Order.objects.filter(completed_on__isnull=False).select_related(
-        "customer__user",  # Get the related User to access first/last name
-        "payment_type",  # Get the Payment details
-    )
+        # Get the status parameter from the query string
+        status_param = request.GET.get("status", None)
 
-    # Build order data
-    orders_with_totals = []
-    for order in completed_orders:
-        # Get customer name from the related User
-        customer_name = (
-            f"{order.customer.user.first_name} {order.customer.user.last_name}".strip()
+        # Filter for completed orders (completed_on is not null)
+        # Orders with completed_on set to a real date are considered complete
+        completed_orders = Order.objects.filter(
+            completed_on__isnull=False
+        ).select_related(
+            "customer__user",  # Get the related User to access first/last name
+            "payment_type",  # Get the Payment details
         )
 
-        # Get payment type merchant name
-        payment_type = (
-            order.payment_type.merchant_name if order.payment_type else "Not Specified"
-        )
+        # Build order data
+        orders_with_totals = []
+        for order in completed_orders:
+            # Get customer name from the related User
+            customer_name = f"{order.customer.user.first_name} {order.customer.user.last_name}".strip()
 
-        # Query line items for this order to calculate total
-        # Each OrderProduct represents one product in the order (quantity of 1)
-        line_items = OrderProduct.objects.filter(order=order).select_related("product")
-        order_total = 0
+            # Get payment type merchant name
+            payment_type = (
+                order.payment_type.merchant_name
+                if order.payment_type
+                else "Not Specified"
+            )
 
-        for line_item in line_items:
-            if line_item.product:
-                # Each line item is a single product (no quantity field)
-                order_total += line_item.product.price
+            # Query line items for this order to calculate total
+            # Each OrderProduct represents one product in the order (quantity of 1)
+            line_items = OrderProduct.objects.filter(order=order).select_related(
+                "product"
+            )
+            order_total = 0
 
-        orders_with_totals.append(
-            {
-                "id": order.id,
-                "customer_name": customer_name,
-                "total": order_total,
-                "payment_type": payment_type,
-                "completed_on": order.completed_on,
-            }
-        )
+            for line_item in line_items:
+                if line_item.product:
+                    # Each line item is a single product (no quantity field)
+                    order_total += line_item.product.price
 
-    # Calculate total revenue
-    total_revenue = sum(order["total"] for order in orders_with_totals)
+            orders_with_totals.append(
+                {
+                    "id": order.id,
+                    "customer_name": customer_name,
+                    "total": order_total,
+                    "payment_type": payment_type,
+                    "completed_on": order.completed_on,
+                }
+            )
 
-    context = {
-        "orders": orders_with_totals,
-        "status": status_param,
-        "total_revenue": total_revenue,
-    }
+        # Calculate total revenue
+        total_revenue = sum(order["total"] for order in orders_with_totals)
 
-    return render(request, "bangazonapi/completed_orders.html", context)
+        context = {
+            "orders": orders_with_totals,
+            "status": status_param,
+            "total_revenue": total_revenue,
+        }
+
+        return render(request, "bangazonapi/completed_orders.html", context)

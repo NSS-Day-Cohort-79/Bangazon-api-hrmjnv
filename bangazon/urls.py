@@ -5,7 +5,7 @@ from rest_framework import routers
 from rest_framework.authtoken.views import obtain_auth_token
 from bangazonapi.models import *
 from bangazonapi.views import *
-from bangazonapi.views.reports import completed_orders_report
+from bangazonapi.views.reports import reports
 
 
 # pylint: disable=invalid-name
@@ -29,5 +29,5 @@ urlpatterns = [
     path("login", login_user),
     path("api-token-auth", obtain_auth_token),
     path("api-auth", include("rest_framework.urls", namespace="rest_framework")),
-    path("reports/orders", completed_orders_report, name="completed_orders"),
+    path("reports/orders", reports.as_view({'get': 'reports'})),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
