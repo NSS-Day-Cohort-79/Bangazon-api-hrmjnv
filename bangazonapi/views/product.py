@@ -251,6 +251,7 @@ class Products(ViewSet):
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         product.category = product_category
+        product.store = store
         product.save()
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
