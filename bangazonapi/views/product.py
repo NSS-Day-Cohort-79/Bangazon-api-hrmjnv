@@ -17,8 +17,9 @@ from bangazonapi.models import (
     ProductCategory,
     ProductRating,
     Recommendation,
-    ProductLike
+    ProductLike,
 )
+from decimal import Decimal
 
 
 class ProductRatingSerializer(serializers.ModelSerializer):
@@ -27,6 +28,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductRating
         fields = ("id", "product", "customer", "score", "review")
+
 
 class ProductLikeSerializer(serializers.ModelSerializer):
     """JSON serializer for product likes"""
@@ -67,7 +69,9 @@ class ProductSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         if not user.is_authenticated:
             return False
-        return ProductLike.objects.filter(product_id=obj.id, customer=Customer.objects.get(user=user)).exists()
+        return ProductLike.objects.filter(
+            product_id=obj.id, customer=Customer.objects.get(user=user)
+        ).exists()
 
 
 class Products(ViewSet):
@@ -321,7 +325,7 @@ class Products(ViewSet):
             products = products.filter(location=location)
 
         if min_price is not None:
-            products = products.filter(price__gte=float(min_price))
+            products = products.filter(price__gte=Decimal(min_price))
 
         if quantity is not None:
             products = products.order_by("-created_date")[: int(quantity)]
@@ -436,7 +440,7 @@ class Products(ViewSet):
             like.save()
 
             return Response(None, status=status.HTTP_204_NO_CONTENT)
-        
+
         if request.method == "DELETE":
 
             try:
