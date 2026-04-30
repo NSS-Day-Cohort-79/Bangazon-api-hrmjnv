@@ -15,9 +15,7 @@ class Product(SafeDeleteModel):
     name = models.CharField(
         max_length=50,
     )
-    # customer = models.ForeignKey(
-    #     Customer, on_delete=models.DO_NOTHING, related_name="products"
-    # )
+
     price = models.DecimalField(
         max_digits=7,
         decimal_places=2,
