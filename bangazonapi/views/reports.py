@@ -9,12 +9,11 @@ from datetime import datetime
 
 class Reports(ViewSet):
 
-    def list(self, request):
+    @action(methods=["get"], detail=False)
+    def orders(self, request):
         """
-        View to display a report of orders.
-        - /reports/orders -> completed orders (default)
-        - /reports/orders?complete=true -> completed orders
-        - /reports/orders?complete=false -> incomplete orders
+        View to display a report of all completed orders (paid orders).
+        Accessed at /reports/orders?status=complete
 
         Shows:
         - Order ID
