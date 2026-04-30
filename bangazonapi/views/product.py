@@ -239,8 +239,8 @@ class Products(ViewSet):
             HTTP/1.1 204 No Content
         """
         product = Product.objects.get(pk=pk)
-        store = Store.objects.get(pk=request.data["store_id"])
-        if store.seller != request.auth.user:
+        current_customer = Customer.objects.get(user=request.auth.user)
+        if product.store.seller != current_customer.user:
             return Response({"message": "You do not have permission to edit this product."}, status=status.HTTP_403_FORBIDDEN)
 
         product.name = request.data["name"]
@@ -251,7 +251,6 @@ class Products(ViewSet):
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         product.category = product_category
-        product.store = store
         product.save()
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
@@ -272,8 +271,8 @@ class Products(ViewSet):
         """
         try:
             product = Product.objects.get(pk=pk)
-            store = Store.objects.get(pk=request.data["store_id"])
-            if store.seller != request.auth.user:
+            current_customer = Customer.objects.get(user=request.auth.user)
+            if product.store.seller != current_customer.user:
                 return Response({"message": "You do not have permission to delete this product."}, status=status.HTTP_403_FORBIDDEN)
             product.delete()
 
