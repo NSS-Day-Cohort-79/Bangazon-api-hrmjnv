@@ -3,42 +3,42 @@
         "model": "bangazonapi.productcategory",
         "pk": 1,
         "fields": {
-            "name": "Tools"
+            "name": "Fiction"
         }
     },
     {
         "model": "bangazonapi.productcategory",
         "pk": 2,
         "fields": {
-            "name": "Auto"
+            "name": "Non-Fiction"
         }
     },
     {
         "model": "bangazonapi.productcategory",
         "pk": 3,
         "fields": {
-            "name": "Technology"
+            "name": "Mystery & Thriller"
         }
     },
     {
         "model": "bangazonapi.productcategory",
         "pk": 4,
         "fields": {
-            "name": "Arts & Crafts"
+            "name": "Science Fiction & Fantasy"
         }
     },
     {
         "model": "bangazonapi.productcategory",
         "pk": 5,
         "fields": {
-            "name": "Clothes"
+            "name": "Biography & Memoir"
         }
     },
     {
         "model": "bangazonapi.productcategory",
         "pk": 6,
         "fields": {
-            "name": "Games/Toys"
+            "name": "History"
         }
     }
 ]
