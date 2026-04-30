@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Completed Orders Report</title>
+    <title>{% if status == 'true' %}Completed{% else %}Incomplete{% endif %} Orders Report</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,7 +64,11 @@
 <body>
 
 <div class="container">
-    <h1>Completed Orders Report</h1>
+    {% if status == 'true' %}
+        <h1>Completed Orders Report</h1>
+    {% else %}
+        <h1>Incomplete Orders Report</h1>
+    {% endif %}
     
     {% if orders %}
         <table>
@@ -93,7 +97,11 @@
         </div>
     {% else %}
         <div class="no-data">
-            <p>No completed orders found.</p>
+            {% if status == 'true' %}
+                <p>No completed orders found.</p>
+            {% else %}
+                <p>No incomplete orders found.</p>
+            {% endif %}
         </div>
     {% endif %}
 </div>

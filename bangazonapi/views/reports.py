@@ -7,13 +7,14 @@ from bangazonapi.models import Order, OrderProduct, Product, ProductCategory
 from datetime import datetime
 
 
-class reports(ViewSet):
+class Reports(ViewSet):
 
-    @action(methods=["get"], detail=False)
-    def reports(self, request):
+    def list(self, request):
         """
-        View to display a report of all completed orders (paid orders).
-        Accessed at /reports/orders?status=complete
+        View to display a report of orders.
+        - /reports/orders -> completed orders (default)
+        - /reports/orders?complete=true -> completed orders
+        - /reports/orders?complete=false -> incomplete orders
 
         Shows:
         - Order ID
@@ -22,42 +23,38 @@ class reports(ViewSet):
         - Payment type (merchant name)
         """
 
-        # Get the status parameter from the query string
-        status_param = request.GET.get("status", None)
+        # Get status parameter from query string
+        status_param = request.GET.get("complete", "true")
 
-        # Filter for completed orders (completed_on is not null)
-        # Orders with completed_on set to a real date are considered complete
-        completed_orders = Order.objects.filter(
-            completed_on__isnull=False
-        ).select_related(
-            "customer__user",  # Get the related User to access first/last name
-            "payment_type",  # Get the Payment details
-        )
+        # Filter orders based on completion status
+        if status_param.lower() == "true":
+            orders = Order.objects.filter(completed_on__isnull=False).select_related(
+                "customer__user", "payment_type"
+            )
+        elif status_param.lower() == "false":
+            orders = Order.objects.filter(completed_on__isnull=True).select_related(
+                "customer__user", "payment_type"
+            )
+        else:
+            orders = Order.objects.filter(completed_on__isnull=False).select_related(
+                "customer__user", "payment_type"
+            )
 
-        # Build order data
+        # Build order data with totals
         orders_with_totals = []
-        for order in completed_orders:
-            # Get customer name from the related User
+        for order in orders:
             customer_name = f"{order.customer.user.first_name} {order.customer.user.last_name}".strip()
-
-            # Get payment type merchant name
             payment_type = (
                 order.payment_type.merchant_name
                 if order.payment_type
                 else "Not Specified"
             )
 
-            # Query line items for this order to calculate total
-            # Each OrderProduct represents one product in the order (quantity of 1)
+            # Calculate order total
             line_items = OrderProduct.objects.filter(order=order).select_related(
                 "product"
             )
-            order_total = 0
-
-            for line_item in line_items:
-                if line_item.product:
-                    # Each line item is a single product (no quantity field)
-                    order_total += line_item.product.price
+            order_total = sum(item.product.price for item in line_items if item.product)
 
             orders_with_totals.append(
                 {
@@ -69,9 +66,8 @@ class reports(ViewSet):
                 }
             )
 
-        # Calculate total revenue
+        # Calculate total revenue and render
         total_revenue = sum(order["total"] for order in orders_with_totals)
-
         context = {
             "orders": orders_with_totals,
             "status": status_param,
