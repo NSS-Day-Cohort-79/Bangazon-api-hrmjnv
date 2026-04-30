@@ -38,11 +38,20 @@ class ProductLikeSerializer(serializers.ModelSerializer):
         fields = ("id", "product", "customer")
 
 
+class ProductCategorySerializer(serializers.ModelSerializer):
+    """JSON serializer for product categories"""
+
+    class Meta:
+        model = ProductCategory
+        fields = ("id", "name")
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
 
     ratings = ProductRatingSerializer(many=True, read_only=True)
     likes = ProductLikeSerializer(many=True, read_only=True)
+    category = ProductCategorySerializer(many=False, read_only=True)
     is_liked = serializers.SerializerMethodField()
 
     class Meta:
@@ -61,6 +70,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "can_be_rated",
             "ratings",
             "likes",
+            "category",
             "is_liked",
         )
         depth = 1
@@ -322,7 +332,7 @@ class Products(ViewSet):
             products = products.filter(category__id=category)
 
         if location is not None:
-            products = products.filter(location=location)
+            products = products.filter(location__icontains=location)
 
         if min_price is not None:
             products = products.filter(price__gte=Decimal(min_price))
