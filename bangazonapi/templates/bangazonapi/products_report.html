@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% if report_type == 'Expensive' %}Expensive{% else %}Inexpensive{% endif %} Products Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        thead {
+            background-color: #007bff;
+            color: white;
+        }
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .filter-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    {% if report_type == 'Expensive' %}
+        <h1>Expensive Products Report</h1>
+        <div class="filter-info">Showing products priced at ${{ min_price|floatformat:2 }} or more</div>
+    {% else %}
+        <h1>Inexpensive Products Report</h1>
+        <div class="filter-info">Showing products priced under ${{ max_price|floatformat:2 }}</div>
+    {% endif %}
+    
+    {% if products %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Seller</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.category.name }}</td>
+                        <td>${{ product.price|floatformat:2 }}</td>
+                        <td>{{ product.customer.user.first_name }} {{ product.customer.user.last_name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="no-data">
+            {% if report_type == 'Expensive' %}
+                <p>No expensive products found.</p>
+            {% else %}
+                <p>No inexpensive products found.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

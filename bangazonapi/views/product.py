@@ -11,14 +11,17 @@ from rest_framework import status
 from django.core.files.base import ContentFile
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseServerError
+from django.contrib.auth.models import User
 from bangazonapi.models import (
     Product,
     Customer,
     ProductCategory,
     ProductRating,
     Recommendation,
+    Store,
     ProductLike
 )
+from decimal import Decimal
 
 
 class ProductRatingSerializer(serializers.ModelSerializer):
@@ -28,6 +31,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         model = ProductRating
         fields = ("id", "product", "customer", "score", "review")
 
+
 class ProductLikeSerializer(serializers.ModelSerializer):
     """JSON serializer for product likes"""
 
@@ -35,13 +39,28 @@ class ProductLikeSerializer(serializers.ModelSerializer):
         model = ProductLike
         fields = ("id", "product", "customer")
 
+class ProductStoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ('id', 'name')
+
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    """JSON serializer for product categories"""
+
+    class Meta:
+        model = ProductCategory
+        fields = ("id", "name")
+
 
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
 
     ratings = ProductRatingSerializer(many=True, read_only=True)
     likes = ProductLikeSerializer(many=True, read_only=True)
+    category = ProductCategorySerializer(many=False, read_only=True)
     is_liked = serializers.SerializerMethodField()
+    store = ProductStoreSerializer()
 
     class Meta:
         model = Product
@@ -59,7 +78,10 @@ class ProductSerializer(serializers.ModelSerializer):
             "can_be_rated",
             "ratings",
             "likes",
+            "category",
             "is_liked",
+            "store",
+            "category",
         )
         depth = 1
 
@@ -67,7 +89,9 @@ class ProductSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         if not user.is_authenticated:
             return False
-        return ProductLike.objects.filter(product_id=obj.id, customer=Customer.objects.get(user=user)).exists()
+        return ProductLike.objects.filter(
+            product_id=obj.id, customer=Customer.objects.get(user=user)
+        ).exists()
 
 
 class Products(ViewSet):
@@ -132,15 +156,19 @@ class Products(ViewSet):
                 }
             }
         """
+
+        try:
+            store = Store.objects.get(seller=request.auth.user)
+        except Store.DoesNotExist:
+            return Response({"message": "User does not have a store"}, status=status.HTTP_404_NOT_FOUND)
+
         new_product = Product()
         new_product.name = request.data["name"]
         new_product.price = request.data["price"]
         new_product.description = request.data["description"]
         new_product.quantity = request.data["quantity"]
         new_product.location = request.data["location"]
-
-        customer = Customer.objects.get(user=request.auth.user)
-        new_product.customer = customer
+        new_product.store = store
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         new_product.category = product_category
@@ -222,15 +250,15 @@ class Products(ViewSet):
             HTTP/1.1 204 No Content
         """
         product = Product.objects.get(pk=pk)
+        current_customer = Customer.objects.get(user=request.auth.user)
+        if product.store.seller != current_customer.user:
+            return Response({"message": "You do not have permission to edit this product."}, status=status.HTTP_403_FORBIDDEN)
+
         product.name = request.data["name"]
         product.price = request.data["price"]
         product.description = request.data["description"]
         product.quantity = request.data["quantity"]
-        product.created_date = request.data["created_date"]
         product.location = request.data["location"]
-
-        customer = Customer.objects.get(user=request.auth.user)
-        product.customer = customer
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         product.category = product_category
@@ -254,6 +282,9 @@ class Products(ViewSet):
         """
         try:
             product = Product.objects.get(pk=pk)
+            current_customer = Customer.objects.get(user=request.auth.user)
+            if product.store.seller != current_customer.user:
+                return Response({"message": "You do not have permission to delete this product."}, status=status.HTTP_403_FORBIDDEN)
             product.delete()
 
             return Response({}, status=status.HTTP_204_NO_CONTENT)
@@ -303,6 +334,7 @@ class Products(ViewSet):
         direction = self.request.query_params.get("direction", None)
         number_sold = self.request.query_params.get("number_sold", None)
         location = self.request.query_params.get("location", None)
+        min_price = self.request.query_params.get("min_price", None)
 
         if order is not None:
             order_filter = order
@@ -317,7 +349,10 @@ class Products(ViewSet):
             products = products.filter(category__id=category)
 
         if location is not None:
-            products = products.filter(location=location)
+            products = products.filter(location__icontains=location)
+
+        if min_price is not None:
+            products = products.filter(price__gte=Decimal(min_price))
 
         if quantity is not None:
             products = products.order_by("-created_date")[: int(quantity)]
@@ -432,7 +467,7 @@ class Products(ViewSet):
             like.save()
 
             return Response(None, status=status.HTTP_204_NO_CONTENT)
-        
+
         if request.method == "DELETE":
 
             try:
