@@ -86,7 +86,7 @@
                 {% for product in products %}
                     <tr>
                         <td>{{ product.name }}</td>
-                        <td>{{ product.category.label }}</td>
+                        <td>{{ product.category.name }}</td>
                         <td>${{ product.price|floatformat:2 }}</td>
                         <td>{{ product.customer.user.first_name }} {{ product.customer.user.last_name }}</td>
                     </tr>
