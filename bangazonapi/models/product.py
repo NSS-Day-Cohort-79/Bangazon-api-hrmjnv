@@ -20,7 +20,7 @@ class Product(SafeDeleteModel):
     price = models.DecimalField(
         max_digits=7,
         decimal_places=2,
-        validators=[MinValueValidator(0.00), MaxValueValidator(10000.00)],
+        validators=[MinValueValidator(0), MaxValueValidator(10000)],
     )
     description = models.CharField(
         max_length=255,
