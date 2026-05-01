@@ -74,3 +74,51 @@ class Reports(ViewSet):
         }
 
         return render(request, "bangazonapi/completed_orders.html", context)
+
+    @action(methods=["get"], detail=False)
+    def expensiveproducts(self, request):
+        """
+        View to display products priced at $1000 or more.
+        Accessed at /reports/expensiveproducts
+        """
+
+        # Get min_price from query string, default 1000
+        min_price = float(request.GET.get("min_price", 1000))
+
+        # Filter products >= min_price with related data
+        products = Product.objects.filter(price__gte=min_price).select_related(
+            "customer__user", "category"
+        )
+
+        # Prepare data for template
+        context = {
+            "products": products,
+            "min_price": min_price,
+            "report_type": "Expensive",
+        }
+
+        return render(request, "bangazonapi/products_report.html", context)
+
+    @action(methods=["get"], detail=False)
+    def inexpensiveproducts(self, request):
+        """
+        View to display products priced under $1000.
+        Accessed at /reports/inexpensiveproducts
+        """
+
+        # Get max_price from query string, default 1000
+        max_price = float(request.GET.get("max_price", 1000))
+
+        # Filter products < max_price with related data
+        products = Product.objects.filter(price__lt=max_price).select_related(
+            "customer__user", "category"
+        )
+
+        # Prepare data for template
+        context = {
+            "products": products,
+            "max_price": max_price,
+            "report_type": "Inexpensive",
+        }
+
+        return render(request, "bangazonapi/products_report.html", context)
