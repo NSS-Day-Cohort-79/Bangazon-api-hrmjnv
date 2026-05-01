@@ -146,10 +146,10 @@ class Products(ViewSet):
             }
         """
 
-        store = Store.objects.get(pk=request.data["store_id"])
-
-        if store.seller != request.auth.user:
-            return Response({"message": "You do not have permission to add products to this store."}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            store = Store.objects.get(seller=request.auth.user)
+        except Store.DoesNotExist:
+            return Response({"message": "User does not have a store"}, status=status.HTTP_404_NOT_FOUND)
 
         new_product = Product()
         new_product.name = request.data["name"]
@@ -161,9 +161,6 @@ class Products(ViewSet):
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         new_product.category = product_category
-
-
-        
 
         if "image_path" in request.data:
             format, imgstr = request.data["image_path"].split(";base64,")
