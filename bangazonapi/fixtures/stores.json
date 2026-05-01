@@ -1,0 +1,38 @@
+[
+  {
+    "model": "bangazonapi.store",
+    "pk": 1,
+    "fields": {
+      "seller": 5,
+      "name": "The Mockingbird Bookshop",
+      "description": "From Harper Lee to J.K. Rowling — classics, fantasy, thrillers, and memoirs for every kind of reader."
+    }
+  },
+  {
+    "model": "bangazonapi.store",
+    "pk": 2,
+    "fields": {
+      "seller": 6,
+      "name": "Room 101 Books",
+      "description": "Dystopian classics, magical realism, and mind-expanding non-fiction. Big Brother disapproves."
+    }
+  },
+  {
+    "model": "bangazonapi.store",
+    "pk": 3,
+    "fields": {
+      "seller": 7,
+      "name": "The Green Light Bookstore",
+      "description": "Literary fiction, epic fantasy, and history that reads like a thriller. So we beat on, books against the current."
+    }
+  },
+  {
+    "model": "bangazonapi.store",
+    "pk": 4,
+    "fields": {
+      "seller": 8,
+      "name": "The Unread Shelf",
+      "description": "A curated collection of new and upcoming titles across every genre. Your next great read is waiting."
+    }
+  }
+]
