@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "name": "To Kill a Mockingbird",
-      "customer_id": 5,
+      "store_id": 1,
       "price": 12.99,
       "description": "Harper Lee's Pulitzer Prize-winning masterpiece about racial injustice and moral growth in the American South",
       "quantity": 8,
@@ -19,7 +19,7 @@
     "pk": 2,
     "fields": {
       "name": "1984",
-      "customer_id": 6,
+      "store_id": 2,
       "price": 11.99,
       "description": "George Orwell's chilling dystopian novel about a totalitarian society and the dangers of absolute power",
       "quantity": 12,
@@ -34,7 +34,7 @@
     "pk": 3,
     "fields": {
       "name": "Pride and Prejudice",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 9.99,
       "description": "Jane Austen's beloved romantic novel following Elizabeth Bennet and the proud Mr. Darcy",
       "quantity": 10,
@@ -49,7 +49,7 @@
     "pk": 4,
     "fields": {
       "name": "The Great Gatsby",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 10.99,
       "description": "F. Scott Fitzgerald's portrait of the Jazz Age and the elusive American Dream",
       "quantity": 6,
@@ -64,7 +64,7 @@
     "pk": 5,
     "fields": {
       "name": "Harry Potter and the Sorcerer's Stone",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 19.99,
       "description": "J.K. Rowling's magical tale of a young wizard discovering his destiny at Hogwarts School of Witchcraft and Wizardry",
       "quantity": 15,
@@ -79,7 +79,7 @@
     "pk": 6,
     "fields": {
       "name": "The Catcher in the Rye",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 13.99,
       "description": "J.D. Salinger's iconic coming-of-age novel narrated by the rebellious Holden Caulfield",
       "quantity": 5,
@@ -94,7 +94,7 @@
     "pk": 7,
     "fields": {
       "name": "The Alchemist",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 14.99,
       "description": "Paulo Coelho's philosophical novel about a shepherd boy's journey to find his personal legend",
       "quantity": 9,
@@ -109,7 +109,7 @@
     "pk": 8,
     "fields": {
       "name": "Of Mice and Men",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 9.99,
       "description": "John Steinbeck's poignant novella about the friendship of two displaced ranch workers during the Great Depression",
       "quantity": 7,
@@ -124,7 +124,7 @@
     "pk": 9,
     "fields": {
       "name": "Beloved",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 15.99,
       "description": "Toni Morrison's Pulitzer Prize-winning novel about the haunting legacy of slavery in post-Civil War America",
       "quantity": 4,
@@ -139,7 +139,7 @@
     "pk": 10,
     "fields": {
       "name": "The Color Purple",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 14.99,
       "description": "Alice Walker's epistolary novel about the struggles and triumphs of African American women in the rural South",
       "quantity": 6,
@@ -154,7 +154,7 @@
     "pk": 11,
     "fields": {
       "name": "One Hundred Years of Solitude",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 16.99,
       "description": "Gabriel Garc\u00eda M\u00e1rquez's landmark magical realist novel tracing seven generations of the Buend\u00eda family",
       "quantity": 5,
@@ -169,7 +169,7 @@
     "pk": 12,
     "fields": {
       "name": "The Road",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 15.99,
       "description": "Cormac McCarthy's harrowing post-apocalyptic novel about a father and son's struggle to survive",
       "quantity": 3,
@@ -184,7 +184,7 @@
     "pk": 13,
     "fields": {
       "name": "Atomic Habits",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 16.99,
       "description": "James Clear's practical guide to building good habits and breaking bad ones through small, incremental changes",
       "quantity": 20,
@@ -199,7 +199,7 @@
     "pk": 14,
     "fields": {
       "name": "The 7 Habits of Highly Effective People",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 15.99,
       "description": "Stephen R. Covey's enduring guide to personal and professional effectiveness through principle-centered living",
       "quantity": 14,
@@ -214,7 +214,7 @@
     "pk": 15,
     "fields": {
       "name": "Thinking, Fast and Slow",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 17.99,
       "description": "Daniel Kahneman's exploration of the two systems that drive the way we think and make decisions",
       "quantity": 8,
@@ -229,7 +229,7 @@
     "pk": 16,
     "fields": {
       "name": "Outliers",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 14.99,
       "description": "Malcolm Gladwell's fascinating look at what makes high-achievers successful, from the Beatles to Bill Gates",
       "quantity": 11,
@@ -244,7 +244,7 @@
     "pk": 17,
     "fields": {
       "name": "The Body Keeps the Score",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 17.99,
       "description": "Bessel van der Kolk's groundbreaking work on how trauma reshapes body and brain, and paths to recovery",
       "quantity": 7,
@@ -259,7 +259,7 @@
     "pk": 18,
     "fields": {
       "name": "Sapiens: A Brief History of Humankind",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 19.99,
       "description": "Yuval Noah Harari's sweeping narrative of humanity's past and its implications for our future",
       "quantity": 13,
@@ -274,7 +274,7 @@
     "pk": 19,
     "fields": {
       "name": "Quiet: The Power of Introverts",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 14.99,
       "description": "Susan Cain's revolutionary examination of introversion and how introverts can harness their strengths",
       "quantity": 9,
@@ -289,7 +289,7 @@
     "pk": 20,
     "fields": {
       "name": "Blink",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 13.99,
       "description": "Malcolm Gladwell's exploration of rapid cognition and the power of thinking without thinking",
       "quantity": 10,
@@ -304,7 +304,7 @@
     "pk": 21,
     "fields": {
       "name": "Gone Girl",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 14.99,
       "description": "Gillian Flynn's twisty psychological thriller about a marriage gone terrifyingly wrong",
       "quantity": 8,
@@ -319,7 +319,7 @@
     "pk": 22,
     "fields": {
       "name": "The Girl with the Dragon Tattoo",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 15.99,
       "description": "Stieg Larsson's international bestseller about a journalist and hacker investigating a decades-old disappearance",
       "quantity": 6,
@@ -334,7 +334,7 @@
     "pk": 23,
     "fields": {
       "name": "Big Little Lies",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 15.99,
       "description": "Liane Moriarty's darkly comic novel about three women whose lives intertwine around a murder investigation",
       "quantity": 7,
@@ -349,7 +349,7 @@
     "pk": 24,
     "fields": {
       "name": "In the Woods",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 14.99,
       "description": "Tana French's haunting debut novel about a detective investigating a murder near the site of a childhood trauma",
       "quantity": 4,
@@ -364,7 +364,7 @@
     "pk": 25,
     "fields": {
       "name": "The Da Vinci Code",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 16.99,
       "description": "Dan Brown's global phenomenon following Harvard symbologist Robert Langdon through a deadly conspiracy",
       "quantity": 11,
@@ -379,7 +379,7 @@
     "pk": 26,
     "fields": {
       "name": "And Then There Were None",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 10.99,
       "description": "Agatha Christie's world-famous mystery in which ten strangers are lured to an island and begin to die one by one",
       "quantity": 9,
@@ -394,7 +394,7 @@
     "pk": 27,
     "fields": {
       "name": "The Girl on the Train",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 13.99,
       "description": "Paula Hawkins' gripping psychological thriller about an obsessed commuter entangled in a missing person case",
       "quantity": 7,
@@ -409,7 +409,7 @@
     "pk": 28,
     "fields": {
       "name": "Sharp Objects",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 12.99,
       "description": "Gillian Flynn's debut novel about a troubled journalist returning to her hometown to cover a series of murders",
       "quantity": 5,
@@ -424,7 +424,7 @@
     "pk": 29,
     "fields": {
       "name": "Dune",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 17.99,
       "description": "Frank Herbert's epic science fiction novel set on the desert planet Arrakis, the universe's only source of spice",
       "quantity": 12,
@@ -439,7 +439,7 @@
     "pk": 30,
     "fields": {
       "name": "The Hitchhiker's Guide to the Galaxy",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 12.99,
       "description": "Douglas Adams' hilarious comedic sci-fi adventure that begins with the destruction of Earth",
       "quantity": 10,
@@ -454,7 +454,7 @@
     "pk": 31,
     "fields": {
       "name": "Ender's Game",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 14.99,
       "description": "Orson Scott Card's classic military science fiction about a child prodigy trained to fight an alien invasion",
       "quantity": 8,
@@ -469,7 +469,7 @@
     "pk": 32,
     "fields": {
       "name": "A Game of Thrones",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 19.99,
       "description": "George R.R. Martin's sweeping fantasy epic of power, betrayal, and survival in the Seven Kingdoms",
       "quantity": 9,
@@ -484,7 +484,7 @@
     "pk": 33,
     "fields": {
       "name": "The Hunger Games",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 13.99,
       "description": "Suzanne Collins' dystopian tale of Katniss Everdeen forced to compete in a televised fight to the death",
       "quantity": 15,
@@ -499,7 +499,7 @@
     "pk": 34,
     "fields": {
       "name": "Brave New World",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 11.99,
       "description": "Aldous Huxley's prophetic dystopian novel imagining a future where pleasure and conformity control society",
       "quantity": 6,
@@ -514,7 +514,7 @@
     "pk": 35,
     "fields": {
       "name": "Fahrenheit 451",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 12.99,
       "description": "Ray Bradbury's classic about a future society where books are banned and firemen burn them",
       "quantity": 8,
@@ -529,7 +529,7 @@
     "pk": 36,
     "fields": {
       "name": "Neuromancer",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 14.99,
       "description": "William Gibson's groundbreaking cyberpunk novel that defined the genre and coined the term 'cyberspace'",
       "quantity": 4,
@@ -544,7 +544,7 @@
     "pk": 37,
     "fields": {
       "name": "The Left Hand of Darkness",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 13.99,
       "description": "Ursula K. Le Guin's Hugo and Nebula Award-winning novel exploring gender and society on an alien world",
       "quantity": 3,
@@ -559,7 +559,7 @@
     "pk": 38,
     "fields": {
       "name": "Foundation",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 14.99,
       "description": "Isaac Asimov's visionary series opener about a mathematician who creates a plan to preserve civilization",
       "quantity": 7,
@@ -574,7 +574,7 @@
     "pk": 39,
     "fields": {
       "name": "Educated",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 16.99,
       "description": "Tara Westover's memoir of growing up in a survivalist family in rural Idaho and her journey to Cambridge",
       "quantity": 11,
@@ -589,7 +589,7 @@
     "pk": 40,
     "fields": {
       "name": "Becoming",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 19.99,
       "description": "Michelle Obama's intimate and inspiring memoir about her remarkable journey from the South Side of Chicago to the White House",
       "quantity": 14,
@@ -604,7 +604,7 @@
     "pk": 41,
     "fields": {
       "name": "The Glass Castle",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 14.99,
       "description": "Jeannette Walls' remarkable memoir of growing up with eccentric, nomadic parents and her path to success",
       "quantity": 8,
@@ -619,7 +619,7 @@
     "pk": 42,
     "fields": {
       "name": "I Know Why the Caged Bird Sings",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 13.99,
       "description": "Maya Angelou's autobiographical account of her childhood and the formative experiences that shaped her identity",
       "quantity": 6,
@@ -634,7 +634,7 @@
     "pk": 43,
     "fields": {
       "name": "Born a Crime",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 15.99,
       "description": "Trevor Noah's funny and affecting memoir about growing up in apartheid South Africa as a mixed-race child",
       "quantity": 10,
@@ -649,7 +649,7 @@
     "pk": 44,
     "fields": {
       "name": "When Breath Becomes Air",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 14.99,
       "description": "Paul Kalanithi's moving memoir about facing a terminal diagnosis and searching for the meaning of a life well-lived",
       "quantity": 5,
@@ -664,7 +664,7 @@
     "pk": 45,
     "fields": {
       "name": "Wild",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 15.99,
       "description": "Cheryl Strayed's memoir of hiking the Pacific Crest Trail alone after the collapse of her life",
       "quantity": 7,
@@ -679,7 +679,7 @@
     "pk": 46,
     "fields": {
       "name": "The Diary of a Young Girl",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 9.99,
       "description": "Anne Frank's world-famous diary documenting her life in hiding during the Nazi occupation of the Netherlands",
       "quantity": 12,
@@ -694,7 +694,7 @@
     "pk": 47,
     "fields": {
       "name": "Alexander Hamilton",
-      "customer_id": 6,
+      "store_id": 3,
       "price": 21.99,
       "description": "Ron Chernow's definitive biography of the Founding Father whose turbulent life inspired the hit Broadway musical",
       "quantity": 6,
@@ -709,7 +709,7 @@
     "pk": 48,
     "fields": {
       "name": "Guns, Germs, and Steel",
-      "customer_id": 7,
+      "store_id": 4,
       "price": 18.99,
       "description": "Jared Diamond's Pulitzer Prize-winning analysis of why Western civilizations came to dominate the world",
       "quantity": 5,
@@ -724,7 +724,7 @@
     "pk": 49,
     "fields": {
       "name": "The Devil in the White City",
-      "customer_id": 5,
+      "store_id": 2,
       "price": 15.99,
       "description": "Erik Larson's gripping true-crime account of the 1893 World's Fair and a serial killer operating in its shadow",
       "quantity": 8,
@@ -739,7 +739,7 @@
     "pk": 50,
     "fields": {
       "name": "Team of Rivals",
-      "customer_id": 4,
+      "store_id": 1,
       "price": 19.99,
       "description": "Doris Kearns Goodwin's acclaimed biography of Abraham Lincoln and the political genius that united his cabinet",
       "quantity": 4,
