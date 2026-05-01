@@ -1,0 +1,38 @@
+[
+    {
+        "model": "bangazonapi.store",
+        "pk": 1,
+        "fields": {
+            "seller": 5,
+            "name": "Steve's Shop",
+            "description": "All the latest cars at unbeatable prices."
+        }
+    },
+    {
+        "model": "bangazonapi.store",
+        "pk": 2,
+        "fields": {
+            "seller": 6,
+            "name": "Outdoor Outfitters Shop",
+            "description": "Gear and supplies for every outdoor adventure."
+        }
+    },
+    {
+        "model": "bangazonapi.store",
+        "pk": 3,
+        "fields": {
+            "seller": 7,
+            "name": "Home Essentials Shop",
+            "description": "Everything you need to make your house a home."
+        }
+    },
+    {
+        "model": "bangazonapi.store",
+        "pk": 4,
+        "fields": {
+            "seller": 8,
+            "name": "The Shop",
+            "description": "New and used cars across every brand."
+        }
+    }
+]

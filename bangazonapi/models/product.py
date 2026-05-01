@@ -6,6 +6,7 @@ from .customer import Customer
 from .productcategory import ProductCategory
 from .orderproduct import OrderProduct
 from .productrating import ProductRating
+from .store import Store
 
 
 class Product(SafeDeleteModel):
@@ -14,9 +15,7 @@ class Product(SafeDeleteModel):
     name = models.CharField(
         max_length=50,
     )
-    customer = models.ForeignKey(
-        Customer, on_delete=models.DO_NOTHING, related_name="products"
-    )
+
     price = models.DecimalField(
         max_digits=7,
         decimal_places=2,
@@ -30,7 +29,10 @@ class Product(SafeDeleteModel):
     )
     created_date = models.DateField(auto_now_add=True)
     category = models.ForeignKey(
-        ProductCategory, on_delete=models.DO_NOTHING, related_name="products"
+        ProductCategory, on_delete=models.CASCADE, related_name="products"
+    )
+    store = models.ForeignKey(
+        Store, on_delete=models.CASCADE, related_name="products", null=True
     )
     location = models.CharField(
         max_length=50,

@@ -11,13 +11,15 @@ from rest_framework import status
 from django.core.files.base import ContentFile
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseServerError
+from django.contrib.auth.models import User
 from bangazonapi.models import (
     Product,
     Customer,
     ProductCategory,
     ProductRating,
     Recommendation,
-    ProductLike,
+    Store,
+    ProductLike
 )
 from decimal import Decimal
 
@@ -37,6 +39,11 @@ class ProductLikeSerializer(serializers.ModelSerializer):
         model = ProductLike
         fields = ("id", "product", "customer")
 
+class ProductStoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ('id', 'name')
+
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     """JSON serializer for product categories"""
@@ -53,6 +60,7 @@ class ProductSerializer(serializers.ModelSerializer):
     likes = ProductLikeSerializer(many=True, read_only=True)
     category = ProductCategorySerializer(many=False, read_only=True)
     is_liked = serializers.SerializerMethodField()
+    store = ProductStoreSerializer()
 
     class Meta:
         model = Product
@@ -72,6 +80,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "likes",
             "category",
             "is_liked",
+            "store",
+            "category",
         )
         depth = 1
 
@@ -146,15 +156,19 @@ class Products(ViewSet):
                 }
             }
         """
+
+        try:
+            store = Store.objects.get(seller=request.auth.user)
+        except Store.DoesNotExist:
+            return Response({"message": "User does not have a store"}, status=status.HTTP_404_NOT_FOUND)
+
         new_product = Product()
         new_product.name = request.data["name"]
         new_product.price = request.data["price"]
         new_product.description = request.data["description"]
         new_product.quantity = request.data["quantity"]
         new_product.location = request.data["location"]
-
-        customer = Customer.objects.get(user=request.auth.user)
-        new_product.customer = customer
+        new_product.store = store
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         new_product.category = product_category
@@ -236,15 +250,15 @@ class Products(ViewSet):
             HTTP/1.1 204 No Content
         """
         product = Product.objects.get(pk=pk)
+        current_customer = Customer.objects.get(user=request.auth.user)
+        if product.store.seller != current_customer.user:
+            return Response({"message": "You do not have permission to edit this product."}, status=status.HTTP_403_FORBIDDEN)
+
         product.name = request.data["name"]
         product.price = request.data["price"]
         product.description = request.data["description"]
         product.quantity = request.data["quantity"]
-        product.created_date = request.data["created_date"]
         product.location = request.data["location"]
-
-        customer = Customer.objects.get(user=request.auth.user)
-        product.customer = customer
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         product.category = product_category
@@ -268,6 +282,9 @@ class Products(ViewSet):
         """
         try:
             product = Product.objects.get(pk=pk)
+            current_customer = Customer.objects.get(user=request.auth.user)
+            if product.store.seller != current_customer.user:
+                return Response({"message": "You do not have permission to delete this product."}, status=status.HTTP_403_FORBIDDEN)
             product.delete()
 
             return Response({}, status=status.HTTP_204_NO_CONTENT)
