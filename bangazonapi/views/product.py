@@ -30,6 +30,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         model = ProductRating
         fields = ("id", "product", "customer", "score", "review")
 
+
 class ProductLikeSerializer(serializers.ModelSerializer):
     """JSON serializer for product likes"""
 
@@ -77,7 +78,9 @@ class ProductSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         if not user.is_authenticated:
             return False
-        return ProductLike.objects.filter(product_id=obj.id, customer=Customer.objects.get(user=user)).exists()
+        return ProductLike.objects.filter(
+            product_id=obj.id, customer=Customer.objects.get(user=user)
+        ).exists()
 
 
 class Products(ViewSet):
@@ -452,7 +455,7 @@ class Products(ViewSet):
             like.save()
 
             return Response(None, status=status.HTTP_204_NO_CONTENT)
-        
+
         if request.method == "DELETE":
 
             try:
