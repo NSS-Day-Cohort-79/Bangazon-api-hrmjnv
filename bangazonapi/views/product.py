@@ -17,8 +17,9 @@ from bangazonapi.models import (
     ProductCategory,
     ProductRating,
     Recommendation,
-    ProductLike
+    ProductLike,
 )
+from decimal import Decimal
 
 
 class ProductRatingSerializer(serializers.ModelSerializer):
@@ -28,6 +29,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         model = ProductRating
         fields = ("id", "product", "customer", "score", "review")
 
+
 class ProductLikeSerializer(serializers.ModelSerializer):
     """JSON serializer for product likes"""
 
@@ -36,11 +38,20 @@ class ProductLikeSerializer(serializers.ModelSerializer):
         fields = ("id", "product", "customer")
 
 
+class ProductCategorySerializer(serializers.ModelSerializer):
+    """JSON serializer for product categories"""
+
+    class Meta:
+        model = ProductCategory
+        fields = ("id", "name")
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
 
     ratings = ProductRatingSerializer(many=True, read_only=True)
     likes = ProductLikeSerializer(many=True, read_only=True)
+    category = ProductCategorySerializer(many=False, read_only=True)
     is_liked = serializers.SerializerMethodField()
 
     class Meta:
@@ -59,6 +70,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "can_be_rated",
             "ratings",
             "likes",
+            "category",
             "is_liked",
         )
         depth = 1
@@ -67,7 +79,9 @@ class ProductSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         if not user.is_authenticated:
             return False
-        return ProductLike.objects.filter(product_id=obj.id, customer=Customer.objects.get(user=user)).exists()
+        return ProductLike.objects.filter(
+            product_id=obj.id, customer=Customer.objects.get(user=user)
+        ).exists()
 
 
 class Products(ViewSet):
@@ -303,6 +317,7 @@ class Products(ViewSet):
         direction = self.request.query_params.get("direction", None)
         number_sold = self.request.query_params.get("number_sold", None)
         location = self.request.query_params.get("location", None)
+        min_price = self.request.query_params.get("min_price", None)
 
         if order is not None:
             order_filter = order
@@ -317,7 +332,10 @@ class Products(ViewSet):
             products = products.filter(category__id=category)
 
         if location is not None:
-            products = products.filter(location=location)
+            products = products.filter(location__icontains=location)
+
+        if min_price is not None:
+            products = products.filter(price__gte=Decimal(min_price))
 
         if quantity is not None:
             products = products.order_by("-created_date")[: int(quantity)]
@@ -432,7 +450,7 @@ class Products(ViewSet):
             like.save()
 
             return Response(None, status=status.HTTP_204_NO_CONTENT)
-        
+
         if request.method == "DELETE":
 
             try:
